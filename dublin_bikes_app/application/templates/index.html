@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Dublin Bikes Monitor</title>
+    <meta name="description" content="Web appliation that forecasts weather in city over 1 to 5 days;
+    for this assignment the city and dates are fixed at Dublin from Oct 19-23"/>
+    <!-- CSS files -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- ref: https://www.w3schools.com/icons/fontawesome_icons_intro.asp -->
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/media-queries.css') }}"/>
+    <!--Icon shown on browser tabs -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename = 'images/logo.svg') }}"/>
+</head>
+
+<body>
+    <!-- Page content -->
+    <div class="content">
+        <!-- Top of page location; target of 'back to top' links -->
+        <div class="top"></div>
+        <!-- Header (introduction) section -->
+        <header>
+            <!-- Header title -->
+            <div class="title">
+                <a href="/"><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></a>
+                <h1>Dublin Bikes Monitor</h1>
+            </div>
+            <!-- Header Text -->
+            <div id="display-panel" class="container-fullwidth">
+                <!-- Introductory text -->
+                <div class="column-two">
+                    <h2>{{ station }}</h2>
+                    <div class="text-content">
+                        <p>Available bikes: {{ available }}</p>
+                        <p>Free bike stands: {{ slots }}</p>
+                    </div>
+                </div>
+                <!-- Google map of weather location -->
+                <div id="map" class="column-two"></div>
+            </div>
+        </header>
+
+        <!-- Forecast period selection -->
+        <section class="period-selector">
+            <div class="container-fullwidth-col top-pad-20">
+                <h3 class="center-align top-pad-20">Choose your forecast</h3>
+                <!-- Selection form | ref: https://www.w3schools.com/html/html_form_input_types.asp -->
+                <div>
+                    <div class="radio-button"><input id="select1" type="radio" name="period" value="1"> Just&nbsp;today</div>
+                    <div class="radio-button"><input id="select2" type="radio" name="period" value="2"> 2&nbsp;days</div>
+                    <div class="radio-button"><input id="select3" type="radio" name="period" value="3" checked> 3&nbsp;days</div>
+                    <div class="radio-button"><input id="select4" type="radio" name="period" value="4"> 4&nbsp;days</div>
+                    <div class="radio-button"><input id="select5" type="radio" name="period" value="5"> 5&nbsp;days</div>
+                </div>
+                <div class="checks">
+                    <div class="bold-blue bottom-pad-10">Optional Stats</div>
+                    <!-- <h3 class="bottom-pad-10">Optional Stats</h3> -->
+                    <div class="checkbox">Pressure <input id="pressCheck" type="checkbox"></div>
+                    <div class="checkbox">Humidity <input id="humCheck" type="checkbox" checked></div>
+                    <div class="checkbox">Wind Speed <input id="windCheck" type="checkbox" checked></div>
+                </div>
+                <button id="submit" name="submit" onclick="submitPeriod()">Submit</button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer container-fullwidth">
+            <a href="#top" class="to-top-button"><i class="fa fa-sort-up fa-2x"></i></a>
+            <a href="/"><h2>Forecaster</h2></a>
+            <div class="footer-info"><span class="bold-blue">Data:&nbsp;</span><a href="https://openweathermap.org" target="blank">openweathermap.org</a></div>
+            <div class="footer-info"><span class="bold-blue">Email:&nbsp;</span>info@forecaster.org</div>
+        </footer>
+    </div>
+
+    <!-- Main JavaScript -->
+    <script src="{{ url_for('static', filename = 'js/siteScript.js') }}"></script>
+    <!-- Google maps script -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcjZoPZRXKwKsnPyYeC93vDyM4oe168O8&callback=initMap" async defer></script>
+
+</body>
+
+</html>

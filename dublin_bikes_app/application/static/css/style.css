@@ -1,0 +1,393 @@
+/* --------------------------------
+Base page elements
+-------------------------------- */
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,500,700,300italic,400italic,500italic,700italic);
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 24px;
+    color: #2f2e2e;
+    background: #ffffff;
+    width: 100vw;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+}
+
+p {
+    margin-top: 0px;
+    margin-bottom: 18px;
+}
+
+ol {
+    text-align: left;
+    color: #6e6c6d;
+}
+
+a {
+    color: #213e65;
+    text-decoration: none;
+    outline: none;
+    transition: color 0.5s;
+}
+
+a:hover, a:active, a:focus {
+    color: #1996ff;
+}
+
+h1, h2, h3, h4 {
+    margin-top: 0;
+}
+
+h1, h2 {
+    display: block;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+h1 {
+    color: #1996ff;
+    font-size: 48px;
+    line-height: 48px;
+}
+
+h2 {
+    color: #213e65;
+    font-size: 30px;
+    line-height: 30px;
+    margin-top: 0px;
+}
+
+h3 {
+    font-size: 26px;
+    line-height: 26px;
+    color: #1996ff;
+}
+
+h4 {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 400;
+    color: #1996ff;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* --------------------------------
+General layout/container classes
+-------------------------------- */
+
+.content {
+    position: absolute;
+    width: 100%;
+    height: auto;
+}
+
+.content:after {
+    clear: both;
+}
+
+.container-middle {
+    text-align: center;
+    max-width: 900px;
+    height: auto;
+    margin: 0 auto;
+    padding-bottom: 60px;
+}
+
+.container-fullwidth {
+    text-align: center;
+    height: auto;
+    margin: 0 auto;
+    padding: 0px 0px 60px 0px;
+}
+
+.container-fullwidth-col {
+    text-align: center;
+    height: auto;
+    margin: 0 auto;
+    padding: 0px 40px 60px 40px;
+    background-color: #C9D5ED;
+}
+
+.column-two {
+    display: inline-block;
+    width: 500px;
+    text-align: center;
+    vertical-align: top;
+    padding: 0px 40px;
+}
+
+.daily-block {
+    max-width: 1200px;
+    border-bottom: solid 3px  #213e65;
+    padding: 40px 80px 40px 80px;
+}
+
+.detailed-block {
+    max-width: 947px;
+    border-bottom: solid 3px  #213e65;
+    overflow: auto;
+    padding-top: 20px;
+}
+
+.detailed-summary {
+    text-align: center;
+}
+
+div:last-of-type {
+    border-bottom: none;
+}
+
+/* Spacing */
+
+.top-pad-20 {
+    padding-top: 20px !important;
+}
+
+.top-pad-40 {
+    padding-top: 40px !important;
+}
+
+.top-pad-60 {
+    padding-top: 60px !important;
+}
+
+.bottom-pad-10 {
+    padding-bottom: 10px !important;
+}
+
+.bottom-pad-20 {
+    padding-bottom: 20px !important;
+}
+
+.bottom-pad-40 {
+    padding-bottom: 40px !important;
+}
+
+.bottom-pad-60 {
+    padding-bottom: 60px !important;
+}
+
+/* Alignment */
+
+.left-align {
+    text-align: left !important;
+}
+
+.right-align {
+    text-align: right !important;
+}
+
+.center-align {
+    text-align: center !important;
+}
+
+/* --------------------------------
+Text
+-------------------------------- */
+.text-content {
+    text-align: justify;
+    margin: 0 auto;
+}
+
+.text-content a {
+    font-weight: bold;
+}
+
+.daily-descript {
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 52px;
+    white-space: nowrap;
+}
+
+.daily-descript::first-letter, .detailed-descript::first-letter {
+    text-transform: capitalize;
+}
+
+.detailed-descript {
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 50px;
+    vertical-align: top;
+    margin: 20px;
+    white-space: nowrap;
+}
+
+/* --------------------------------
+Tables
+-------------------------------- */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td, th {
+    text-align: center;
+    padding: 10px;
+    border-left: solid 2px #1996ff;
+    border-right: solid 2px #1996ff;
+}
+
+td {
+    white-space: nowrap;
+}
+
+.col-th {
+    font-weight: 400;
+    background-color: #C9D5ED;
+}
+
+.daily-block td:first-of-type {
+    font-weight: bold;
+}
+
+.detailed-block tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.detailed-block tr:nth-child(odd){
+    background-color: #C9D5ED;
+}
+
+/* --------------------------------
+Title (top) Banner
+-------------------------------- */
+.title {
+    background: #213e65;
+    padding: 20px;
+    text-align: center;
+}
+
+.title img {
+    height: 100px;
+}
+
+.title h1 {
+    display: inline;
+    vertical-align: top;
+    padding:0 20px;
+    line-height: 96px
+}
+
+/* --------------------------------
+Display panel
+-------------------------------- */
+
+#display-panel {
+    padding-top: 60px;
+}
+
+#map {
+    height: 250px;
+}
+
+/* --------------------------------
+Period selector form
+-------------------------------- */
+
+.period-selector h3 {
+    color: #213e65;
+}
+
+.checks {
+    padding: 20px 0;
+}
+
+.radio-button, .checkbox {
+    display: inline;
+    white-space: nowrap;
+}
+
+/* Buttons */
+
+button {
+    display: inline-block;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
+    letter-spacing: 2px;
+    color: #ffffff;
+    background: #213e65;
+    font-size: 16px;
+    padding: 10px 18px;
+    margin: 20px;
+    text-transform: uppercase;
+    border-style: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.7s;
+}
+
+button:hover {
+    background: #1996ff;
+}
+
+/* --------------------------------
+Footer
+-------------------------------- */
+
+.footer {
+    position: relative;
+    background: #213e65;
+    color: #ffffff;
+    padding-top: 60px !important;
+    padding-bottom: 70px !important;
+}
+
+.footer h2 {
+    color: #ffffff;
+}
+
+.footer h2:hover {
+    color: #1996ff;
+}
+
+a.to-top-button {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    margin-left: -30px;
+    display: block;
+    padding: 10px 0;
+    width: 60px;
+    height: 60px;
+    background: #213e65;
+    color: #ffffff;
+    border-radius: 30px;
+}
+
+a.to-top-button:hover {
+    color: #1996ff;
+}
+
+.footer-info {
+    display:block;
+    margin: auto;
+    padding: 10px;
+}
+
+.footer-info a {color: #ffffff;}
+.footer-info a:visited {color: #ffffff;}
+.footer-info a:hover {color: #1996ff;}
+
+.bold-blue {
+    font-weight: bold;
+    color: #1996ff;
+}
