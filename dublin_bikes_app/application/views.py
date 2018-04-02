@@ -4,7 +4,7 @@ from application import db
 
 @app.route('/')
 def index():
-	sql = 'SELECT * FROM bikesdata.test_stations WHERE station_number = 55;'
+	sql = 'SELECT * FROM bikesdata.stations WHERE station_number = 55;'
 	result = db.engine.execute(sql)
 	
 	data = []
