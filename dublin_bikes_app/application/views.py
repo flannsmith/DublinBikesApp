@@ -4,7 +4,7 @@ from application import db
 
 @app.route('/')
 def index():
-	sql = 'SELECT * FROM bikesdata.stations WHERE id = 1;'
+	sql = 'SELECT * FROM bikesdata.test_stations WHERE station_number = 55;'
 	result = db.engine.execute(sql)
 	
 	data = []
@@ -12,5 +12,5 @@ def index():
 		data.append(row)
 		print("Address:", row['address'])
 	
-	returnDict = {'station': data[0]['address'], 'available': data[0]['bikes_available'], 'slots': data[0]['free_slots']}
+	returnDict = {'station': data[0]['address'], 'available': data[0]['bikes_available'], 'slots': data[0]['stands_available']}
 	return render_template("index.html", **returnDict)
