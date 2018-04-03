@@ -1,15 +1,31 @@
 'use strict';
+$(document).ready(function(){
+    // Get static station data from JSON file
+    var xmlhttp = new XMLHttpRequest();
+    var url_stations = "/static/data/station_data.json";
 
-//Function to round decimal values from the weather data | ref: http://www.jacklmoore.com/notes/rounding-in-javascript/
-function round(value, num_places) {
-    return Number(Math.round(value + 'e' + num_places) + 'e-' + num_places);
-}
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            //Parse the JSON data to a JavaScript variable
+            var staticStation = JSON.parse(xmlhttp.responseText);
+            var html = "";
+            for (var i = 0; i < staticStation.length; i++) {
+                html += ('<li><a href="#">' + staticStation[i].address + '</a></li>');
+            }
+            document.getElementById('station-dropdown').innerHTML = html;
+        }
+    }
+
+xmlhttp.open("GET", url_stations, true);
+xmlhttp.send();
+
+});
 
 //Adds Google map to display panel using Google Maps API | ref: https://developers.google.com/maps/documentation/javascript/
 function initMap() {
     //Create map object and specify the element in which to display it
     var map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 53.3462763, lng: -6.2825708},
+        center: {lat: 53.344, lng: -6.27},
         zoom: 13
     });
 
@@ -85,7 +101,7 @@ function markers(map) {
                     var station = obj[i];
                     //console.log(station);
                     if (station.address == this.title) {
-                        var html = "<h2>" + this.title + "</h2><div class='text-content'>";
+                        var html = "<h2 class='bottom-pad-20'>" + this.title + "</h2>";
                         html += "<p>Available bikes: " + station.available_bikes + "</p>";
                         html += "<p>Free bike stands: " + station.available_bike_stands + "</p></div>";
                         break;
@@ -98,6 +114,12 @@ function markers(map) {
         }
     }
 
+}
+
+
+//Function to round decimal values from the weather data | ref: http://www.jacklmoore.com/notes/rounding-in-javascript/
+function round(value, num_places) {
+    return Number(Math.round(value + 'e' + num_places) + 'e-' + num_places);
 }
 
 //Loads new content into panel on click of submission button
