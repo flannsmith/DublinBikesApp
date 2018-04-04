@@ -27,7 +27,7 @@ xmlhttp.send();
 function initMap() {
     //Create map object and specify the element in which to display it
     var map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 53.3462763, lng: -6.27},
+        center: {lat: 53.345, lng: -6.27},
         zoom: 13
     });
 
