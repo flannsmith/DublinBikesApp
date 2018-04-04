@@ -1,10 +1,33 @@
 'use strict';
 
+$(document).ready(function(){
+    // Get static station data from JSON file
+    var xmlhttp = new XMLHttpRequest();
+    var url_stations = "/static/data/station_data.json";
+
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            //Parse the JSON data to a JavaScript variable
+            var staticStation = JSON.parse(xmlhttp.responseText);
+            var html = "";
+            for (var i = 0; i < staticStation.length; i++) {
+                html += ('<li><a href="#">' + staticStation[i].address + '</a></li>');
+            }
+            document.getElementById('station-dropdown').innerHTML = html;
+        }
+    }
+
+xmlhttp.open("GET", url_stations, true);
+xmlhttp.send();
+
+});
+
+
 //Adds Google map to display panel using Google Maps API | ref: https://developers.google.com/maps/documentation/javascript/
 function initMap() {
     //Create map object and specify the element in which to display it
     var map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 53.3462763, lng: -6.2825708},
+        center: {lat: 53.3462763, lng: -6.27},
         zoom: 13
     });
 
