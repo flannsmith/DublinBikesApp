@@ -156,6 +156,14 @@ div:last-of-type {
 
 /* Spacing */
 
+.right-pad-60 {
+    padding-right: 60px;
+}
+
+.left-pad-60 {
+    padding-left: 60px;
+}
+
 .top-pad-20 {
     padding-top: 20px !important;
 }
