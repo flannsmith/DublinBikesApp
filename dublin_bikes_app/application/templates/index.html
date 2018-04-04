@@ -33,30 +33,46 @@
         </header>
 
         <!--Station info and map section -->
-        <section id="info+map" class="container-fullwidth">
+        <section id="info+map" class="container top-pad-60 bottom-pad-60">
             <!-- Panel for displaying station information -->
-            <div class="column-two">
-                <div id="station-info" class="text-content">
-                    <h2>Station Information</h2>
-                    <p>Welcome to Dublin Bikes Monitor! Select a station from the drop-down menu to check the current number of available bikes and free stands. Or find the station on the map and click its marker. These circle markers use colour to indicate bike availability and size to indicate stand availability.</p>
+            <div class="row">
+                <div class="col-sm-6 right-pad-60 left-pad-60">
+                    <div id="station-info" class="text-content">
+                        <h2>Station Information</h2>
+                        <p>Welcome to Dublin Bikes Monitor! Select a station from the drop-down menu to check the current number of available bikes and free stands. Or find the station on the map and click its marker. These circle markers use colour to indicate bike availability and size to indicate stand availability.</p>
+                    </div>
+                        <div class="dropdown">
+                        <button class="dropdown-toggle" type="button" data-toggle="dropdown">Select a station
+                        <span class="caret"></span></button>
+                        <ul id="station-dropdown" class="dropdown-menu scrollable-menu" role="menu"></ul>
+                    </div>
                 </div>
-                    <div class="dropdown">
-                    <button class="dropdown-toggle" type="button" data-toggle="dropdown">Select a station
-                    <span class="caret"></span></button>
-                    <ul id="station-dropdown" class="dropdown-menu scrollable-menu" role="menu"></ul>
-                </div>
-            </div>
-            <!-- Google map of around station locations -->
-            <div id="map" class="column-two"></div>
+                <!-- Google map of around station locations -->
+                <div id="map" class="col-sm-6 right-pad-60"></div>
         </section>
 
 
-        <!-- Forecast period selection -->
-        <section id="analysis" class="container-fullwidth-col top-pad-20">
+        <!-- Charts -->
+        <section id="analysis" class="container top-pad-20">
             <div class="row">
-                <div class="col-sm-4">Bike availability prediction</div>
-                <div class="col-sm-4">Daily averages chart</div>
-                <div class="col-sm-4">Hourly averages chart</div>
+                <div class="col-sm-4">
+                    <h2>Bike availability prediction</h2>
+                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
+                </div>
+                <div class="col-sm-4">
+                    <h2>Daily averages chart</h2>
+                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
+                </div>
+                <div class="col-sm-4">
+                    <h2>Hourly averages chart</h2>
+                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
+                </div>
+            </div>
+            <div class="row top-pad-60 bottom-pad-60">
+                <div class="center-align">
+                    <h2>Weather Chart</h2>
+                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
+                </div>
             </div>
         </section>
 
