@@ -12,9 +12,6 @@ def get_json_data(url):
 
 def station_data_to_DB(json_file, DB_uri):
     """Inserts data from json file as rows in the MySQL databases"""
-# variable value to use in SQL statement
-    stat_id = 18
-    sql = "INSERT INTO bikesdata.stations VALUES ({}, 0, 4, 16, 20, 'open', -6.22, 52.33, 'Merrion Square');".format(stat_id)
     
     # Create MySQL DB engine object
     engine = sa.create_engine(DB_uri)
