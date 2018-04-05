@@ -22,41 +22,43 @@ else:
   print("MySQL Connected")
 
   insertStation = ("INSERT INTO weather"
-                   "(timestamp, weather_id, weather_name, main_weather, description, weather_icon, temperature, humidity, \
+                   "(timestamp, weather_id, main_weather, description, weather_icon, temperature, humidity, \
                   pressure, temp_min, temp_max, wind_speed, wind_dir,\
                    cloud_cover)"
-                   "VALUES( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s)")
+                   "VALUES( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s)")
 
   url = 'http://api.openweathermap.org/data/2.5/forecast?id=7778677&APPID=2a4ae98d608786fcf5b6bbcf5a9467d6'
   response = requests.get(url)
   #print("JSON Object received")
   openWeatherData = json.loads(response.text)
 
-  time_stamp = openWeatherData["list"][0]["dt_txt"]
-  weather_id = openWeatherData["list"][0]["weather"][0]["id"]
-  weather_name = openWeatherData["message"]
-  main_weather = openWeatherData["list"][0]["weather"][0]["main"]
-  description = openWeatherData["list"][0]["weather"][0]["description"]
-  weather_icon = openWeatherData["list"][0]["weather"][0]["icon"]
-  temperature = openWeatherData["list"][0]["main"]["temp"]
-  humidity = openWeatherData["list"][0]["main"]["humidity"]
-  pressure = openWeatherData["list"][0]["main"]["pressure"]
-  temp_min = openWeatherData["list"][0]["main"]["temp_min"]
-  temp_max = openWeatherData["list"][0]["main"]["temp_max"]
-  wind_speed = openWeatherData["list"][0]["wind"]["speed"]
-  wind_dir = openWeatherData["list"][0]["wind"]["deg"]
-  cloud_cover = openWeatherData["list"][0]["clouds"]["all"]
+  for item in openWeatherData["list"]:
+    time_stamp = item["dt_txt"]
+    weather_id = item["weather"][0]["id"]
+    main_weather = item["weather"][0]["main"]
+    description = item["weather"][0]["description"]
+    weather_icon = item["weather"][0]["icon"]
+    temperature = item["main"]["temp"]
+    humidity = item["main"]["humidity"]
+    pressure = item["main"]["pressure"]
+    temp_min = item["main"]["temp_min"]
+    temp_max = item["main"]["temp_max"]
+    wind_speed = item["wind"]["speed"]
+    wind_dir = item["wind"]["deg"]
+    cloud_cover = item["clouds"]["all"]
 
-  LUD = time.strftime(
-      "%Y-%m-%d %H:%M:%S", time.gmtime(time_stamp / 1000.0))
+  LUD = str(datetime.now())
 
-  weatherData = (time_stamp, weather_id, weather_name, main_weather, description,
+  # LUD = time.strftime(
+  #     "%Y-%m-%d %H:%M:%S", time.gmtime(time_stamp / 1000.0))
+
+  weatherData = (time_stamp, weather_id, main_weather, description,
                  weather_icon, temperature, humidity, pressure, temp_min, temp_max, wind_speed, wind_dir, cloud_cover)
 
   try:
           cursor.execute(insertStation, weatherData)
   except mysql.connector.Error as err:
-      print("Something went wrong in inserting the dump: {}".format(err))
+      print("Something went wrong inserting the data at: {}".format(err))
   else:
     print("Data Inserted at: {}".format(LUD))
 cnx.commit()
