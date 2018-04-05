@@ -22,10 +22,10 @@ else:
   print("MySQL Connected")
 
   insertStation = ("INSERT INTO weather"
-                   "(timestamp, weather_id, weather_name, main_weather,description, weather_icon, temperature, humidity, \
-                  pressure, temp_min, temp_max, visibility, wind_speed, wind_dir,\
+                   "(timestamp, weather_id, weather_name, main_weather, description, weather_icon, temperature, humidity, \
+                  pressure, temp_min, temp_max, wind_speed, wind_dir,\
                    cloud_cover)"
-                   "VALUES( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s)")
+                   "VALUES( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s)")
 
   url = 'http://api.openweathermap.org/data/2.5/forecast?id=7778677&APPID=2a4ae98d608786fcf5b6bbcf5a9467d6'
   response = requests.get(url)
