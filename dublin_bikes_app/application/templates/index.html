@@ -7,10 +7,13 @@
     <meta name="description" content="Web appliation that forecasts weather in city over 1 to 5 days;
     for this assignment the city and dates are fixed at Dublin from Oct 19-23"/>
     <!-- CSS files -->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- ref: https://www.w3schools.com/icons/fontawesome_icons_intro.asp -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/media-queries.css') }}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!--Icon shown on browser tabs -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename = 'images/logo.svg') }}"/>
 </head>
@@ -27,41 +30,49 @@
                 <a href="/"><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></a>
                 <h1>Dublin Bikes Monitor</h1>
             </div>
-            <!-- Header Text -->
-            <div id="display-panel" class="container-fullwidth">
-                <!-- Introductory text -->
-                <div class="column-two">
-                    <h2>{{ station }}</h2>
-                    <div class="text-content">
-                        <p>Available bikes: {{ available }}</p>
-                        <p>Free bike stands: {{ slots }}</p>
-                    </div>
-                </div>
-                <!-- Google map of weather location -->
-                <div id="map" class="column-two"></div>
-            </div>
         </header>
 
-        <!-- Forecast period selection -->
-        <section class="period-selector">
-            <div class="container-fullwidth-col top-pad-20">
-                <h3 class="center-align top-pad-20">Choose your forecast</h3>
-                <!-- Selection form | ref: https://www.w3schools.com/html/html_form_input_types.asp -->
-                <div>
-                    <div class="radio-button"><input id="select1" type="radio" name="period" value="1"> Just&nbsp;today</div>
-                    <div class="radio-button"><input id="select2" type="radio" name="period" value="2"> 2&nbsp;days</div>
-                    <div class="radio-button"><input id="select3" type="radio" name="period" value="3" checked> 3&nbsp;days</div>
-                    <div class="radio-button"><input id="select4" type="radio" name="period" value="4"> 4&nbsp;days</div>
-                    <div class="radio-button"><input id="select5" type="radio" name="period" value="5"> 5&nbsp;days</div>
+        <!--Station info and map section -->
+        <section id="info+map" class="container top-pad-60 bottom-pad-60">
+            <!-- Panel for displaying station information -->
+            <div class="row">
+                <div class="col-sm-6 right-pad-60 left-pad-60">
+                    <div id="station-info" class="text-content">
+                        <h2>Station Information</h2>
+                        <p>Welcome {{ test }}to Dublin Bikes Monitor! Select a station from the drop-down menu to check the current number of available bikes and free stands. Or find the station on the map and click its marker. These circle markers use colour to indicate bike availability and size to indicate stand availability.</p>
+                    </div>
+                        <div class="dropdown">
+                        <button class="dropdown-toggle" type="button" data-toggle="dropdown">Select a station
+                        <span class="caret"></span></button>
+                        <ul id="station-dropdown" class="dropdown-menu scrollable-menu" role="menu"></ul>
+                    </div>
                 </div>
-                <div class="checks">
-                    <div class="bold-blue bottom-pad-10">Optional Stats</div>
-                    <!-- <h3 class="bottom-pad-10">Optional Stats</h3> -->
-                    <div class="checkbox">Pressure <input id="pressCheck" type="checkbox"></div>
-                    <div class="checkbox">Humidity <input id="humCheck" type="checkbox" checked></div>
-                    <div class="checkbox">Wind Speed <input id="windCheck" type="checkbox" checked></div>
+                <!-- Google map of around station locations -->
+                <div id="map" class="col-sm-6 right-pad-60"></div>
+        </section>
+
+
+        <!-- Charts -->
+        <section id="analysis" class="container top-pad-20">
+            <div class="row">
+                <div class="col-sm-4">
+                    <h2>Bike availability prediction</h2>
+                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
                 </div>
-                <button id="submit" name="submit" onclick="submitPeriod()">Submit</button>
+                <div class="col-sm-4">
+                    <h2>Daily averages chart</h2>
+                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
+                </div>
+                <div class="col-sm-4">
+                    <h2>Hourly averages chart</h2>
+                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
+                </div>
+            </div>
+            <div class="row top-pad-60 bottom-pad-60">
+                <div class="center-align">
+                    <h2>Weather Chart</h2>
+                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
+                </div>
             </div>
         </section>
 

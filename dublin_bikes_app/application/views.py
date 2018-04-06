@@ -1,16 +1,26 @@
-from flask import render_template
+from flask import render_template, jsonify, g
 from application import app
 from application import db
+from application import analysis
 
 @app.route('/')
 def index():
-	sql = 'SELECT * FROM bikesdata.stations WHERE id = 1;'
-	result = db.engine.execute(sql)
+	return render_template("index.html")
+
+
+@app.route('/station_stats/<int:station_num>')
+def get_chart_data(station_num):
+	"""REST API response providing json file with data for charts"""
 	
-	data = []
-	for row in result:
-		data.append(row)
-		print("Address:", row['address'])
+	# Get data from queries and structure as JSON file (list of dictionaries)
+	data = {'daily_avg': analysis.get_daily_avg(station_num), 'hourly_avg': analysis.get_hourly_avg(station_num), 'weather': analysis.get_weather(station_num)}
 	
-	returnDict = {'station': data[0]['address'], 'available': data[0]['bikes_available'], 'slots': data[0]['free_slots']}
-	return render_template("index.html", **returnDict)
+	# Return JSON file as HTTP response
+	return jsonify(station_stats=data)
+
+
+@app.teardown_appcontext
+def close_connection(exception):
+	db = getattr(g, '_database', None)
+	if db is not None:
+		db.close()
