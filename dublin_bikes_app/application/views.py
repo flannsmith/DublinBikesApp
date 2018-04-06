@@ -12,7 +12,7 @@ def index():
 def get_chart_data(station_num):
 	"""REST API response providing json file with data for charts"""
 	
-	# Get data from queries and structure as JSON file (list of dictionaries)
+	# Get data from analysis functions and structure for jsonify (dictionary of dictionaries)
 	data = {'daily_avg': analysis.get_daily_avg(station_num), 'hourly_avg': analysis.get_hourly_avg(station_num), 'weather': analysis.get_weather(station_num)}
 	
 	# Return JSON file as HTTP response
