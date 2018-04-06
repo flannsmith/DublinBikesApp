@@ -47,20 +47,20 @@ else:
     wind_dir = item["wind"]["deg"]
     cloud_cover = item["clouds"]["all"]
 
-  LUD = str(datetime.now())
+    LUD = str(datetime.now())
 
-  # LUD = time.strftime(
-  #     "%Y-%m-%d %H:%M:%S", time.gmtime(time_stamp / 1000.0))
+    # LUD = time.strftime(
+    #     "%Y-%m-%d %H:%M:%S", time.gmtime(time_stamp / 1000.0))
 
-  weatherData = (time_stamp, weather_id, main_weather, description,
-                 weather_icon, temperature, humidity, pressure, temp_min, temp_max, wind_speed, wind_dir, cloud_cover)
+    weatherData = (time_stamp, weather_id, main_weather, description,
+                    weather_icon, temperature, humidity, pressure, temp_min, temp_max, wind_speed, wind_dir, cloud_cover)
 
-  try:
-          cursor.execute(insertStation, weatherData)
-  except mysql.connector.Error as err:
-      print("Something went wrong inserting the data at: {}".format(err))
-  else:
-    print("Data Inserted at: {}".format(LUD))
-cnx.commit()
-cnx.close()
+    try:
+            cursor.execute(insertStation, weatherData)
+    except mysql.connector.Error as err:
+        print("Something went wrong inserting the data at: {}".format(err))
+    else:
+      print("Data Inserted at: {}".format(LUD))
+  cnx.commit()
+  cnx.close()
 
