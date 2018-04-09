@@ -57,7 +57,8 @@ def json_to_db(station_json, weather_json):
             bikestand_total = station['bike_stands']
             stands_available = station['available_bike_stands']
             bikes_available = station['available_bikes']
-            update_time = station['last_update']
+            y
+            te_time = station['last_update']
 
             LUD = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(update_time // 1000))
 

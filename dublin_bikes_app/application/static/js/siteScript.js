@@ -1,26 +1,68 @@
 'use strict';
+// Global station json related variables
+const jcdUrl = "https://api.jcdecaux.com/vls/v1/stations";
+const jcdParams = "?contract=Dublin&apiKey=8b0bfe2e205616b7ebec9f675e2168f7b9726683";
+var stationData = {};
+var stationsUpdated = false;
 
-$(document).ready(function(){
-    // Get static station data from JSON file
-    var xmlhttp = new XMLHttpRequest();
-    var url_stations = "/static/data/station_data.json";
 
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            //Parse the JSON data to a JavaScript variable
-            var staticStation = JSON.parse(xmlhttp.responseText);
-            var html = "";
-            for (var i = 0; i < staticStation.length; i++) {
-                html += ('<li><a href="#">' + staticStation[i].address + '</a></li>');
-            }
-            document.getElementById('station-dropdown').innerHTML = html;
+function updateStationData(url, callback) {
+    if (stationsUpdated === false) {
+        $.getJSON(url, function(result){
+            stationData = result;
+            callback(stationData);
+            console.log(stationData);
+        });
+        trueWaitFalse(stationsUpdated, 60000);
+    }
+}
+
+function trueWaitFalse(bool, waitTime) {
+    bool = true;
+    setTimeout(function() {
+        bool = false;
+    }, waitTime);
+}
+
+function updateStations(stationName) {
+    //drawStationCharts(this);
+    //drawStationChartsWeekly(this);
+    for (var i = 0; i < stationData.length; i++) {
+        var station = stationData[i];
+        //console.log(station.address);
+        if (station.address == stationName) {
+            $.getJSON(jcdUrl+"/"+station.number.toString()+jcdParams, function(result) {
+                var html = "<h2>" + stationName + "</h2><div class='text-content'>";
+                html += "<p>Available bikes: " + result.available_bikes + "</p>";
+                html += "<p>Free bike stands: " + result.available_bike_stands + "</p></div>";
+                document.getElementById('station-info').innerHTML = html;
+            });
+            break;
         }
     }
+}
 
-xmlhttp.open("GET", url_stations, true);
-xmlhttp.send();
+function dropDownStations(url) {
+    $.getJSON(url, function(result){
+        stationData = result;
+        console.log(stationData);
+        var html = "";
+        for (var i = 0; i < stationData.length; i++) {
+            var name = stationData[i].address;
+            html += ('<li><a href="#" onclick="updateStations(\''+ name + '\')">' + name + '</a></li>');
+        }
+        document.getElementById("station-dropdown").innerHTML = html;
+    });
+}
 
+
+// Page load actions
+$(document).ready(function(){
+    // Dropdown list to select station
+    dropDownStations("/static/data/station_data.json");
 });
+
+//updateStationData(jcdUrl, dropDownStations); // update station data //FIXME
 
 
 //Adds Google map to display panel using Google Maps API | ref: https://developers.google.com/maps/documentation/javascript/
@@ -31,30 +73,15 @@ function initMap() {
         zoom: 13
     });
 
-    markers(map);
+    addMarkers(map, jcdUrl + jcdParams);
 }
 
 //Add marker for each station to Google map
-function markers(map) {
-    var xmlhttp = new XMLHttpRequest();
-    var url_stations = "/static/data/station_data.json";
-
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            //Parse the JSON data to a JavaScript variable
-            var parsedObj = JSON.parse(xmlhttp.responseText);
-            //Function (defined below) to generate new page content from the parsed JSON data
-            addMarkers(parsedObj, map);
-        }
-    }
-
-    xmlhttp.open("GET", url_stations, true);
-    xmlhttp.send();
-
-    //Function to generate new page content from the daily JSON data
-    function addMarkers(obj, map) {
-        for (var i = 0; i < obj.length; i++) {
-            var station = obj[i];
+function addMarkers(map, url) {
+    $.getJSON(url, function(result) {
+        stationData = result;
+        for (var i = 0; i < stationData.length; i++) {
+            var station = stationData[i];
             //console.log(station.available_bikes);
 
             // Color marker (pin) according to availability
@@ -94,26 +121,9 @@ function markers(map) {
                 animation: google.maps.Animation.DROP,
                 title: station.address
             });
-
             // Change details and charts to corresponding station on clicking marker
-            marker.addListener("click", function() {
-                //drawStationCharts(this);
-                //drawStationChartsWeekly(this);
-                for (var i = 0; i < obj.length; i++) {
-                    var station = obj[i];
-                    //console.log(station);
-                    if (station.address == this.title) {
-                        var html = "<h2>" + this.title + "</h2><div class='text-content'>";
-                        html += "<p>Available bikes: " + station.available_bikes + "</p>";
-                        html += "<p>Free bike stands: " + station.available_bike_stands + "</p></div>";
-                        break;
-                    }
-                }
-
-            document.getElementById('station-info').innerHTML = html;
-            console.log(this.title);
-            });
+            marker.addListener("click", updateStations.bind(null, marker.title));
         }
-    }
+    });
 
 }
