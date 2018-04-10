@@ -12,9 +12,9 @@ const jcdParams = "?contract=Dublin&apiKey=8b0bfe2e205616b7ebec9f675e2168f7b9726
 // Functions
 //--------------------------------------------------------------
 
-function updateStations(stationNumber) {
-    var url = jcdUrl+"/"+stationNumber+jcdParams;
-    $.getJSON(url, function(result) {
+function updateData(stationNumber) {
+    var jcdecUrl = jcdUrl+"/"+stationNumber+jcdParams;
+    $.getJSON(jcdecUrl, function(result) {
         // Station info
         var html = "<h2>" + result.address + "</h2><div class='text-content'>";
         html += "<p>Available bikes: " + result.available_bikes + "</p>";
@@ -22,7 +22,20 @@ function updateStations(stationNumber) {
         document.getElementById('station-info').innerHTML = html;
     })
     .fail(function() {
-        console.log( "Error: Failed to get JSON data from "+ url );
+        console.log( "Error: Failed to get JSON data from "+ jcdecUrl );
+    });
+
+    var flaskUrl = $SCRIPT_ROOT + "/station_stats/" + stationNumber;
+
+    $.getJSON(flaskUrl, function(result) {
+        console.log(result.station_stats.daily_avg);
+        var dailyData = result.station_stats.daily_avg;
+        var chartData = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
+        dailyChart.data.datasets[0].data = chartData;
+        dailyChart.update();
+    })
+    .fail(function() {
+        console.log( "Error: Failed to get JSON data from "+ flaskUrl );
     });
 }
 
@@ -34,7 +47,7 @@ function dropDownStations(url) {
         for (var i = 0; i < stationData.length; i++) {
             var name = stationData[i].name;
             var number = stationData[i].number;
-            html += ('<li><a href="#" onclick="updateStations(\''+ number + '\')">' + name + '</a></li>');
+            html += ('<li><a href="#" onclick="updateData(\''+ number + '\')">' + name + '</a></li>');
         }
         document.getElementById("station-dropdown").innerHTML = html;
     })
@@ -43,7 +56,6 @@ function dropDownStations(url) {
     });
 }
 
-//-- Charts (chartJS) --
 function createBarChart(elemId, chartData, labels, title) {
     // DOM element to hold chart
     var chart = document.getElementById(elemId).getContext('2d');
@@ -79,38 +91,18 @@ function createBarChart(elemId, chartData, labels, title) {
     return barChart
 }
 
-function initCharts(url) {
-    $.getJSON(url, function(result) {
-        console.log(result.station_stats.daily_avg);
-        // Daily chart
-        var dailyData = result.station_stats.daily_avg;
-        var chartDataDaily = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
-        var labelsDaily = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-        // Create daily chart in canvas on html page
-        dailyChart = createBarChart("daily-chart", chartDataDaily, labelsDaily, "Average bike availability per day");
-
-        // Hourly chart
-    })
-    .fail(function() {
-        console.log( "Error: Failed to get JSON data from "+ url );
-    });
-}
-
 function updateCharts(stationNumber) {
-    var url = $SCRIPT_ROOT + "/station_stats/" + stationNumber
-    console.log(url);
+    var flaskUrl = $SCRIPT_ROOT + "/station_stats/" + stationNumber;
 
-    $.getJSON(url, function(result) {
+    $.getJSON(flaskUrl, function(result) {
         console.log(result.station_stats.daily_avg);
         var dailyData = result.station_stats.daily_avg;
         var chartData = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
         dailyChart.data.datasets[0].data = chartData;
-        //console.log(chart1.data.datasets[0].data);
-        //chart1.data.datasets.data = [1,2,3,4,5,6,7];
         dailyChart.update();
     })
     .fail(function() {
-        console.log( "Error: Failed to get JSON data from "+ url );
+        console.log( "Error: Failed to get JSON data from "+ flaskUrl );
     });
 }
 
@@ -138,27 +130,31 @@ function updateCharts(stationNumber) {
 // updateStationData(jcdUrl, dropDownStations); // update station data //FIXME
 
 //--------------------------------------------------------------
-// Initial page
+// Main
 //--------------------------------------------------------------
 
-//$(document).ready(function(){
+/***** Dropdown list to select station *****/
 
-    // Dropdown list to select station
-    dropDownStations("/static/data/station_data.json");
+dropDownStations("/static/data/station_data.json");
 
-    // Initialize daily average chart
-    var url = $SCRIPT_ROOT + "/station_stats/" + "37";
-    // Daily chart
-    var chartDataDaily = [1,1,1,1,1,1,1];
-    var labelsDaily = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    // Create daily chart in canvas on html page
-    var dailyChart = createBarChart("daily-chart", chartDataDaily, labelsDaily, "Average bike availability per day");
-    // Add data from database via API call to flask app
-    updateCharts("37");
 
-//});
+/***** Charts ******/
 
-//-- Google Map --
+// Initialize daily average chart
+var url = $SCRIPT_ROOT + "/station_stats/" + "37";
+// Daily chart
+var chartDataDaily = [4,4,4,4,4,4,4]; // initial dummy data; makes initial animation smoother
+var labelsDaily = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+// Create daily chart in canvas on html page
+var dailyChart = createBarChart("daily-chart", chartDataDaily, labelsDaily, "Average bike availability per day");
+// Add inital real data from database via API call to flask app
+updateCharts("37");
+
+// Initialize hourly average chart
+// TODO
+
+
+/***** Google Map *****/
 
 // Adds Google map to display panel using Google Maps
 function initMap() {
@@ -218,10 +214,8 @@ function addMarkers(map, url) {
                 title: station.address,
                 number: station.number
             });
-            // Change details and charts to corresponding station on clicking marker
-            marker.addListener("click", updateStations.bind(null, marker.number));
-            //marker.addListener("click", updateCharts.bind(null, dailyChart, 'chart2', marker.number)); // FIXME: chart 2
-            marker.addListener("click", updateCharts.bind(null, marker.number)); // FIXME: chart 2
+            // Add listener to update current station data and charts on click
+            marker.addListener("click", updateData.bind(null, marker.number)); // FIXME: chart 2
 
         }
     });
