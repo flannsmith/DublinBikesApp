@@ -28,24 +28,18 @@ function trueWaitFalse(bool, waitTime) {
     }, waitTime);
 }
 
-function updateStations(stationName) {
-    for (var i = 0; i < stationData.length; i++) {
-        var station = stationData[i];
-        //console.log(station.address);
-        if (station.address == stationName) {
-            $.getJSON(jcdUrl+"/"+station.number.toString()+jcdParams, function(result) {
-                var html = "<h2>" + stationName + "</h2><div class='text-content'>";
-                html += "<p>Available bikes: " + result.available_bikes + "</p>";
-                html += "<p>Free bike stands: " + result.available_bike_stands + "</p></div>";
-                document.getElementById('station-info').innerHTML = html;
-            });
-            break;
-        }
-    }
+function updateStations(stationNumber) {
+    $.getJSON(jcdUrl+"/"+stationNumber.toString()+jcdParams, function(result) {
+        // Station info
+        var html = "<h2>" + result.address + "</h2><div class='text-content'>";
+        html += "<p>Available bikes: " + result.available_bikes + "</p>";
+        html += "<p>Free bike stands: " + result.available_bike_stands + "</p></div>";
+        document.getElementById('station-info').innerHTML = html;
+    });
+}
 
     //drawStationCharts(this);
     //drawStationChartsWeekly(this);
-}
 
 function dropDownStations(url) {
     $.getJSON(url, function(result){
@@ -53,8 +47,9 @@ function dropDownStations(url) {
         console.log(stationData);
         var html = "";
         for (var i = 0; i < stationData.length; i++) {
-            var name = stationData[i].address;
-            html += ('<li><a href="#" onclick="updateStations(\''+ name + '\')">' + name + '</a></li>');
+            var name = stationData[i].name;
+            var number = stationData[i].number;
+            html += ('<li><a href="#" onclick="updateStations(\''+ number + '\')">' + name + '</a></li>');
         }
         document.getElementById("station-dropdown").innerHTML = html;
     });
@@ -128,43 +123,57 @@ function addMarkers(map, url) {
                    scale: Math.max(Math.min(station.available_bike_stands, 14), 8) // size according to free stands, but compress range as otherwise size differences too extreme
                 },
                 animation: google.maps.Animation.DROP,
-                title: station.address
+                title: station.address,
+                number: station.number
             });
             // Change details and charts to corresponding station on clicking marker
-            marker.addListener("click", updateStations.bind(null, marker.title));
+            marker.addListener("click", updateStations.bind(null, marker.number));
+            marker.addListener("click", updateCharts.bind(null, marker.number));
         }
     });
 }
 
 //-- Charts (chartJS) --
+function updateCharts(stationNumber) {
+    var url = $SCRIPT_ROOT + "/station_stats/" + stationNumber
+    console.log(url);
 
-// // DOM element to hold chart
-// var chart = document.getElementById('daily-chart').getContext('2d');
-//
-// // Initialize chart
-// var barChart = new Chart(chart,{
-//
-//     type: 'bar',
-//     data: {
-//         labels:[{% for item in labels %}
-//                     "{{item}}",
-//                  {% endfor %}],
-// 
-//         datasets: [
-//             {
-//                 label: "Number",
-//                 backgroundColor: "#1996ff",
-//                 data : [{% for item in values['daily_avg'] %}
-//                             {{item}},
-//                         {% endfor %}]
-//             }
-//         ]
-//     },
-//     options: {
-//         legend: { display: true },
-//         title: {
-//             display: true,
-//             text: 'Average number of free bikes per day'
-//         }
-//     }
-// });
+    $.getJSON(url, function(result) {
+        console.log(result.station_stats.daily_avg);
+        var dailyData = result.station_stats.daily_avg;
+        chartData = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
+        //dailyChart.data.datasets.data = chartData;
+        createChart(chartData);
+        console.log(dailyChart.data.datasets.data);
+        dailyChart.update();
+    });
+}
+
+function createChart(labels, chartData) {
+    // DOM element to hold chart
+    var chart = document.getElementById('daily-chart').getContext('2d');
+
+    // Initialize chart
+    var dailyChart = new Chart(chart,{
+
+        type: 'bar',
+        data: {
+            labels: labels,
+
+            datasets: [
+                {
+                    label: "Number",
+                    backgroundColor: "#1996ff",
+                    data: chartData
+                }
+            ]
+        },
+        options: {
+            legend: { display: true },
+            title: {
+                display: true,
+                text: 'Average number of free bikes per day'
+            }
+        }
+    });
+}
