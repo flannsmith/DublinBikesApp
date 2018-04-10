@@ -1,27 +1,40 @@
 """Functions used by get_chart_data(station_num) in views.py TODO: Needs to be completed"""
+import json
+import pymysql
+import simplejson
+from lib2to3.fixer_util import Number
+#from application import db
 
-from application import db
+host = "bikes.ciqr4q2vn3eh.us-west-2.rds.amazonaws.com"
+user = "bikemaster"
+password = "listofletters"
+dbname = "bikesdata"
 
-def get_daily_avg(station_num):
+
+def get_daily_avg(station_num  = 1):
     """Returns daily average data for REST API response providing json file with data for charts"""
     
-    # MySQL query to get average daily availability for a given station
-    sql_daily = """SELECT dayname(update_time) AS 'day', ROUND(AVG(bikes_available)) AS 'bikes'
-    FROM bikesdata.stations
-    WHERE station_number = {}
-    GROUP BY dayname(update_time);""".format(station_num)
+    conn = pymysql.connect(host, user=user, passwd=password,db=dbname)
+    cursor = conn.cursor()
+    sql = """SELECT avg(bikes_available) From bikesdata.stations WHERE address='Clarendon Row' 
+    GROUP BY DAYNAME(update_time);"""
+    #sql2 = """SELECT avg(bikes_available) From bikesdata.stations GROUP BY station_number"""
+    result = cursor.execute(sql)
+    #result2 = cursor.execute(sql2)
+    #data = cursor.fetchall()
+    data = cursor.fetchall()
+    #for row in cursor.fetchall():
+    #    data.append(row)
+    cursor.close()
+    values = []
     
-         
-    # Execute SQL query for daily averages
-    result = db.engine.execute(sql_daily) # result is a RowProxy
-    
-    # Get data from queries and structure for JSON file (dictionary)
-    data = {}
-    
-    for row in result:
-        data[row['day']] = row['bikes'] # Note each row in RowProxy is dictionary: {col_name: col_value_for_row}
+    for row in data:
+        items = simplejson.dumps(row, use_decimal=True)
+        values.append(items)
         
-    return data
+    return values
+
+
 
 
 def get_hourly_avg(station_num):
@@ -58,3 +71,4 @@ def get_weather(station_num):
     return data
 
 
+get_daily_avg(1)

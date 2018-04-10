@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Dublin Bikes Tracker</title>
-    <meta name="description" content="Web appliation to provide latest availability for Dublin Bikes, along with weather information and analysis of historical bike data."/>
+    <title>Dublin Bikes Monitor</title>
+    <meta name="description" content="Web appliation that forecasts weather in city over 1 to 5 days;
+    for this assignment the city and dates are fixed at Dublin from Oct 19-23"/>
     <!-- CSS files -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
@@ -27,7 +28,7 @@
             <!-- Header title -->
             <div class="title">
                 <a href="/"><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></a>
-                <h1>Dublin Bikes Tracker</h1>
+                <h1>Dublin Bikes Monitor</h1>
             </div>
         </header>
 
@@ -46,6 +47,7 @@
                         <ul id="station-dropdown" class="dropdown-menu scrollable-menu" role="menu"></ul>
                     </div>
                 </div>
+             </div>
                 <!-- Google map of around station locations -->
                 <div id="map" class="col-sm-6 right-pad-60"></div>
         </section>
@@ -78,9 +80,9 @@
         <!-- Footer -->
         <footer class="footer container-fullwidth">
             <a href="#top" class="to-top-button"><i class="fa fa-sort-up fa-2x"></i></a>
-            <a href="/"><h2>Dublin Bikes Tracker</h2></a>
+            <a href="/"><h2>Forecaster</h2></a>
             <div class="footer-info"><span class="bold-blue">Data:&nbsp;</span><a href="https://openweathermap.org" target="blank">openweathermap.org</a></div>
-            <div class="footer-info"><span class="bold-blue">Email:&nbsp;</span>info@dbtracker.org</div>
+            <div class="footer-info"><span class="bold-blue">Email:&nbsp;</span>info@forecaster.org</div>
         </footer>
     </div>
 
@@ -88,7 +90,9 @@
     <script src="{{ url_for('static', filename = 'js/siteScript.js') }}"></script>
     <!-- Google maps script -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcjZoPZRXKwKsnPyYeC93vDyM4oe168O8&callback=initMap" async defer></script>
-
+    
+    {% include chart.js %}
+    
 </body>
 
 </html>

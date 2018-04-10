@@ -5,9 +5,9 @@ from application import analysis
 
 @app.route('/')
 def index():
-	# Initial data for charts
-	data = {'daily_avg': analysis.get_daily_avg(1), 'hourly_avg': analysis.get_hourly_avg(), 'weather': analysis.get_weather()}
-	return render_template("index.html", *data)
+	values = analysis.get_daily_avg()
+	return render_template("index.html", values = values )
+
 
 
 @app.route('/station_stats/<int:station_num>')
