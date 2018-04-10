@@ -4,47 +4,32 @@
 //--------------------------------------------------------------
 const jcdUrl = "https://api.jcdecaux.com/vls/v1/stations";
 const jcdParams = "?contract=Dublin&apiKey=8b0bfe2e205616b7ebec9f675e2168f7b9726683";
-var stationData = {};
-var stationsUpdated = false;
+
+// var stationData = {};
+// var stationsUpdated = false;
 
 //--------------------------------------------------------------
 // Functions
 //--------------------------------------------------------------
-function updateStationData(url, callback) {
-    if (stationsUpdated === false) {
-        $.getJSON(url, function(result){
-            stationData = result;
-            callback(stationData);
-            console.log(stationData);
-        });
-        trueWaitFalse(stationsUpdated, 60000);
-    }
-}
-
-function trueWaitFalse(bool, waitTime) {
-    bool = true;
-    setTimeout(function() {
-        bool = false;
-    }, waitTime);
-}
 
 function updateStations(stationNumber) {
-    $.getJSON(jcdUrl+"/"+stationNumber.toString()+jcdParams, function(result) {
+    var url = jcdUrl+"/"+stationNumber+jcdParams;
+    $.getJSON(url, function(result) {
         // Station info
         var html = "<h2>" + result.address + "</h2><div class='text-content'>";
         html += "<p>Available bikes: " + result.available_bikes + "</p>";
         html += "<p>Free bike stands: " + result.available_bike_stands + "</p></div>";
         document.getElementById('station-info').innerHTML = html;
+    })
+    .fail(function() {
+        console.log( "Error: Failed to get JSON data from "+ url );
     });
 }
 
-    //drawStationCharts(this);
-    //drawStationChartsWeekly(this);
-
 function dropDownStations(url) {
     $.getJSON(url, function(result){
-        stationData = result;
-        console.log(stationData);
+        var stationData = result;
+        //console.log(stationData);
         var html = "";
         for (var i = 0; i < stationData.length; i++) {
             var name = stationData[i].name;
@@ -52,8 +37,103 @@ function dropDownStations(url) {
             html += ('<li><a href="#" onclick="updateStations(\''+ number + '\')">' + name + '</a></li>');
         }
         document.getElementById("station-dropdown").innerHTML = html;
+    })
+    .fail(function() {
+        console.log( "Error: Failed to get JSON data from "+ url );
     });
 }
+
+//-- Charts (chartJS) --
+function createBarChart(elemId, chartData, labels, title) {
+    // DOM element to hold chart
+    var chart = document.getElementById(elemId).getContext('2d');
+
+    // Initialize chart
+    var barChart = new Chart(chart,{
+        type: 'bar',
+        data: {
+            labels: labels,
+
+            datasets: [
+                {
+                    label: "Average",
+                    backgroundColor: "#1996ff",
+                    data: chartData
+                }
+            ]
+        },
+        options: {
+            legend: { display: false },
+            title: {
+                display: true,
+                text: title
+            },
+            scales: {
+                yAxes: [{
+                    ticks: { beginAtZero: true }
+                }]
+            }
+        }
+    });
+
+    return barChart
+}
+
+function initCharts(url) {
+    $.getJSON(url, function(result) {
+        console.log(result.station_stats.daily_avg);
+        // Daily chart
+        var dailyData = result.station_stats.daily_avg;
+        var chartDataDaily = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
+        var labelsDaily = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+        // Create daily chart in canvas on html page
+        dailyChart = createBarChart("daily-chart", chartDataDaily, labelsDaily, "Average bike availability per day");
+
+        // Hourly chart
+    })
+    .fail(function() {
+        console.log( "Error: Failed to get JSON data from "+ url );
+    });
+}
+
+function updateCharts(stationNumber) {
+    var url = $SCRIPT_ROOT + "/station_stats/" + stationNumber
+    console.log(url);
+
+    $.getJSON(url, function(result) {
+        console.log(result.station_stats.daily_avg);
+        var dailyData = result.station_stats.daily_avg;
+        var chartData = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
+        dailyChart.data.datasets[0].data = chartData;
+        //console.log(chart1.data.datasets[0].data);
+        //chart1.data.datasets.data = [1,2,3,4,5,6,7];
+        dailyChart.update();
+    })
+    .fail(function() {
+        console.log( "Error: Failed to get JSON data from "+ url );
+    });
+}
+
+// function updateStationData(url, callback) {
+//     if (stationsUpdated === false) {
+//         $.getJSON(url, function(result){
+//             stationData = result;
+//             callback(stationData);
+//             console.log(stationData);
+//         })
+//         .fail(function() {
+//             console.log( "Error: Failed to get JSON data from "+ url );
+//         });
+//         trueWaitFalse(stationsUpdated, 60000);
+//     }
+// }
+//
+// function trueWaitFalse(bool, waitTime) {
+//     bool = true;
+//     setTimeout(function() {
+//         bool = false;
+//     }, waitTime);
+// }
 
 // updateStationData(jcdUrl, dropDownStations); // update station data //FIXME
 
@@ -61,11 +141,22 @@ function dropDownStations(url) {
 // Initial page
 //--------------------------------------------------------------
 
-//-- Dropdown menu of stations --
-$(document).ready(function(){
+//$(document).ready(function(){
+
     // Dropdown list to select station
     dropDownStations("/static/data/station_data.json");
-});
+
+    // Initialize daily average chart
+    var url = $SCRIPT_ROOT + "/station_stats/" + "37";
+    // Daily chart
+    var chartDataDaily = [1,1,1,1,1,1,1];
+    var labelsDaily = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    // Create daily chart in canvas on html page
+    var dailyChart = createBarChart("daily-chart", chartDataDaily, labelsDaily, "Average bike availability per day");
+    // Add data from database via API call to flask app
+    updateCharts("37");
+
+//});
 
 //-- Google Map --
 
@@ -77,13 +168,14 @@ function initMap() {
         zoom: 13
     });
 
+    // Add markers to map
     addMarkers(map, jcdUrl + jcdParams);
 }
 
 // Add marker for each station to Google map
 function addMarkers(map, url) {
     $.getJSON(url, function(result) {
-        stationData = result;
+        var stationData = result;
         for (var i = 0; i < stationData.length; i++) {
             var station = stationData[i];
             //console.log(station.available_bikes);
@@ -128,52 +220,9 @@ function addMarkers(map, url) {
             });
             // Change details and charts to corresponding station on clicking marker
             marker.addListener("click", updateStations.bind(null, marker.number));
-            marker.addListener("click", updateCharts.bind(null, marker.number));
-        }
-    });
-}
+            //marker.addListener("click", updateCharts.bind(null, dailyChart, 'chart2', marker.number)); // FIXME: chart 2
+            marker.addListener("click", updateCharts.bind(null, marker.number)); // FIXME: chart 2
 
-//-- Charts (chartJS) --
-function updateCharts(stationNumber) {
-    var url = $SCRIPT_ROOT + "/station_stats/" + stationNumber
-    console.log(url);
-
-    $.getJSON(url, function(result) {
-        console.log(result.station_stats.daily_avg);
-        var dailyData = result.station_stats.daily_avg;
-        chartData = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
-        //dailyChart.data.datasets.data = chartData;
-        createChart(chartData);
-        console.log(dailyChart.data.datasets.data);
-        dailyChart.update();
-    });
-}
-
-function createChart(labels, chartData) {
-    // DOM element to hold chart
-    var chart = document.getElementById('daily-chart').getContext('2d');
-
-    // Initialize chart
-    var dailyChart = new Chart(chart,{
-
-        type: 'bar',
-        data: {
-            labels: labels,
-
-            datasets: [
-                {
-                    label: "Number",
-                    backgroundColor: "#1996ff",
-                    data: chartData
-                }
-            ]
-        },
-        options: {
-            legend: { display: true },
-            title: {
-                display: true,
-                text: 'Average number of free bikes per day'
-            }
         }
     });
 }
