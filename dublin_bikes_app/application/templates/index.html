@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/style.css') }}"/>
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/media-queries.css') }}"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!--Icon shown on browser tabs -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename = 'images/logo.svg') }}"/>
@@ -54,22 +55,18 @@
         <!-- Charts -->
         <section id="analysis" class="container top-pad-20">
             <div class="row">
-                <div class="col-sm-4">
-                    <h2>Bike availability prediction</h2>
-                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
+                <div class="chart col-sm-6">
+                    <h2>Daily Averages</h2>
+                    <canvas id="daily-chart"></canvas>
                 </div>
-                <div class="col-sm-4">
-                    <h2>Daily averages chart</h2>
-                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
-                </div>
-                <div class="col-sm-4">
-                    <h2>Hourly averages chart</h2>
+                <div id="hourly-chart"class="col-sm-6">
+                    <h2>Hourly Averages</h2>
                     <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
                 </div>
             </div>
             <div class="row top-pad-60 bottom-pad-60">
                 <div class="center-align">
-                    <h2>Weather Chart</h2>
+                    <h2>Weather Forecast</h2>
                     <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
                 </div>
             </div>
@@ -88,6 +85,38 @@
     <script src="{{ url_for('static', filename = 'js/siteScript.js') }}"></script>
     <!-- Google maps script -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcjZoPZRXKwKsnPyYeC93vDyM4oe168O8&callback=initMap" async defer></script>
+    <script>
+        // DOM element to hold chart
+        var chart = document.getElementById('daily-chart').getContext('2d');
+
+        // Initialize chart
+        var barChart = new Chart(chart,{
+
+            type: 'bar',
+            data: {
+                labels:[{% for item in values['daily_avg'] %}
+                            "{{item}}",
+                         {% endfor %}],
+
+                datasets: [
+                    {
+                        label: "Number",
+                        backgroundColor: "#1996ff",
+                        data : [{% for v in values['daily_avg'].values() %}
+                                    {{ v }},
+                                {% endfor %}]
+                    }
+                ]
+            },
+            options: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Average number of free bikes per day'
+                }
+            }
+        });
+    </script>
 
 </body>
 

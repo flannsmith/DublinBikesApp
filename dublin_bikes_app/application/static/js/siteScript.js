@@ -1,11 +1,15 @@
 'use strict';
-// Global station json related variables
+//--------------------------------------------------------------
+// Global variables
+//--------------------------------------------------------------
 const jcdUrl = "https://api.jcdecaux.com/vls/v1/stations";
 const jcdParams = "?contract=Dublin&apiKey=8b0bfe2e205616b7ebec9f675e2168f7b9726683";
 var stationData = {};
 var stationsUpdated = false;
 
-
+//--------------------------------------------------------------
+// Functions
+//--------------------------------------------------------------
 function updateStationData(url, callback) {
     if (stationsUpdated === false) {
         $.getJSON(url, function(result){
@@ -25,8 +29,6 @@ function trueWaitFalse(bool, waitTime) {
 }
 
 function updateStations(stationName) {
-    //drawStationCharts(this);
-    //drawStationChartsWeekly(this);
     for (var i = 0; i < stationData.length; i++) {
         var station = stationData[i];
         //console.log(station.address);
@@ -40,6 +42,9 @@ function updateStations(stationName) {
             break;
         }
     }
+
+    //drawStationCharts(this);
+    //drawStationChartsWeekly(this);
 }
 
 function dropDownStations(url) {
@@ -55,17 +60,21 @@ function dropDownStations(url) {
     });
 }
 
+// updateStationData(jcdUrl, dropDownStations); // update station data //FIXME
 
-// Page load actions
+//--------------------------------------------------------------
+// Initial page
+//--------------------------------------------------------------
+
+//-- Dropdown menu of stations --
 $(document).ready(function(){
     // Dropdown list to select station
     dropDownStations("/static/data/station_data.json");
 });
 
-//updateStationData(jcdUrl, dropDownStations); // update station data //FIXME
+//-- Google Map --
 
-
-//Adds Google map to display panel using Google Maps API | ref: https://developers.google.com/maps/documentation/javascript/
+// Adds Google map to display panel using Google Maps
 function initMap() {
     //Create map object and specify the element in which to display it
     var map = new google.maps.Map(document.getElementById('map'), {
@@ -76,7 +85,7 @@ function initMap() {
     addMarkers(map, jcdUrl + jcdParams);
 }
 
-//Add marker for each station to Google map
+// Add marker for each station to Google map
 function addMarkers(map, url) {
     $.getJSON(url, function(result) {
         stationData = result;
@@ -125,5 +134,37 @@ function addMarkers(map, url) {
             marker.addListener("click", updateStations.bind(null, marker.title));
         }
     });
-
 }
+
+//-- Charts (chartJS) --
+
+// // DOM element to hold chart
+// var chart = document.getElementById('daily-chart').getContext('2d');
+//
+// // Initialize chart
+// var barChart = new Chart(chart,{
+//
+//     type: 'bar',
+//     data: {
+//         labels:[{% for item in labels %}
+//                     "{{item}}",
+//                  {% endfor %}],
+// 
+//         datasets: [
+//             {
+//                 label: "Number",
+//                 backgroundColor: "#1996ff",
+//                 data : [{% for item in values['daily_avg'] %}
+//                             {{item}},
+//                         {% endfor %}]
+//             }
+//         ]
+//     },
+//     options: {
+//         legend: { display: true },
+//         title: {
+//             display: true,
+//             text: 'Average number of free bikes per day'
+//         }
+//     }
+// });
