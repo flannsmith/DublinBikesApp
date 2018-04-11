@@ -1,5 +1,11 @@
 import json
 import requests
+<<<<<<< HEAD
+=======
+from datetime import datetime
+from flask import Flask
+import pytz
+>>>>>>> refs/remotes/origin/master
 import mysql.connector
 from mysql.connector import errorcode
 import time
@@ -41,18 +47,22 @@ else:
     bikes_available = rows['available_bikes']
     update_time = rows['last_update']
 
-    LUD = time.strftime(
-        "%Y-%m-%d %H:%M:%S", time.gmtime(update_time / 1000.0))
+    # LUD = time.strftime(
+    #     "%Y-%m-%d %H:%M:%S", time.gmtime(update_time / 1000.0))
 
-    datajcD = (station_number, LUD, name, address, bikes_available,
+    tz = pytz.timezone("GB-Eire")
+    pytz.utc.localize(update_time, is_dst=None).astimezone(tz)
+    #datetime.fromtimestamp(update_time, tz).strftime("%Y-%m-%d %H:%M:%S")
+
+    datajcD = (station_number, update_time, name, address, bikes_available,
                stands_available, bikestand_total, station_status, banking, latitude, longitude)
 
     try:
             cursor.execute(insertStation, datajcD)
     except mysql.connector.Error as err:
-        print("Something went wrong in inserting the dump: {}".format(err))
+        print("Exception raised: {}".format(err))
     else:
-      print("Data Inserted at: {}".format(LUD))
+      print("Data Inserted at: {}".format(update_time))
   cnx.commit()
   cnx.close()
 

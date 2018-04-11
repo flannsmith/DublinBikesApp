@@ -1,6 +1,7 @@
 import json
 import requests
 from datetime import datetime
+import pytz
 from flask import Flask
 import mysql.connector
 from mysql.connector import errorcode
@@ -49,10 +50,13 @@ else:
 
     LUD = str(datetime.now())
 
+    tz = pytz.timezone("GB-Eire")
+    datetime.fromtimestamp(time_stamp, tz).strftime("%Y-%m-%d %H:%M:%S")
+
     # LUD = time.strftime(
     #     "%Y-%m-%d %H:%M:%S", time.gmtime(time_stamp / 1000.0))
 
-    weatherData = (time_stamp, weather_id, main_weather, description,
+    weatherData = (tz, weather_id, main_weather, description,
                     weather_icon, temperature, humidity, pressure, temp_min, temp_max, wind_speed, wind_dir, cloud_cover)
 
     try:
