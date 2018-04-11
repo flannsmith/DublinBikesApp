@@ -16,7 +16,7 @@ def get_daily_avg(station_num  = 1):
     
     conn = pymysql.connect(host, user=user, passwd=password,db=dbname)
     cursor = conn.cursor()
-    sql = """SELECT avg(bikes_available) From bikesdata.stations WHERE station_number = {} 
+    sql = """SELECT round(avg(bikes_available)) From bikesdata.stations WHERE station_number = {} 
     GROUP BY DAYNAME(update_time);""".format(station_num)
     result = cursor.execute(sql)
  

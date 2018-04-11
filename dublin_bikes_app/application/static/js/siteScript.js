@@ -127,3 +127,25 @@ function addMarkers(map, url) {
     });
 
 }
+function drawStationCharts(num){
+
+    // Get static station data from JSON file
+    var xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            //Parse the JSON data to a JavaScript variable
+            var chartDate= JSON.parse(xmlhttp.responseText);
+            updateChart(chartDate);
+        }
+    }
+
+xmlhttp.open("GET", "/station_stats/num", true);
+xmlhttp.send();
+}
+
+function updateChart(data){
+	barchart.data.datasets.data = data;
+	chart.update();
+}
+

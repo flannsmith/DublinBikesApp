@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/media-queries.css') }}"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- ref=http://www.chartjs.org/docs/latest/getting-started/installation.html-->
     <!--Icon shown on browser tabs -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename = 'images/logo.svg') }}"/>
 </head>
@@ -60,9 +63,9 @@
                     <h2>Bike availability prediction</h2>
                     <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
                 </div>
-                <div class="col-sm-4">
+                <div id="dailyChart" class="col-sm-4" >
                     <h2>Daily averages chart</h2>
-                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
+                    <canvas id="barChart"></canvas>
                 </div>
                 <div class="col-sm-4">
                     <h2>Hourly averages chart</h2>
@@ -90,9 +93,35 @@
     <script src="{{ url_for('static', filename = 'js/siteScript.js') }}"></script>
     <!-- Google maps script -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcjZoPZRXKwKsnPyYeC93vDyM4oe168O8&callback=initMap" async defer></script>
-    
-    {% include chart.js %}
-    
+    <script>
+        var chart = document.getElementById('dailyChart').getContext('2d');
+          
+        var barChart = new Chart(chart,{
+            
+            type: 'bar',
+            data: {
+                labels:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]，
+                
+                datasets: [
+                    {
+                        label: "Number",
+                        backgroundColor: "#3cba9f",
+                        data : [{% for item in values %}
+                                    {{item}},
+                                {% endfor %}]
+                    }
+                ]
+            },
+            options: {
+                legend: { display: true },
+                title: {
+                    display: true,
+                    text: 'The daily average'
+                }
+            }
+        });
+      </script>
+
 </body>
 
 </html>
