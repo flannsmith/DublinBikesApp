@@ -97,11 +97,22 @@ GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add 
             elif values[i]['day'] == 'Sunday':
                 sundayData.append(values[i]['available'])
                 break
-    return (mondayData, tuesdayData, wednesdayData, thursdayData, fridayData, saturdayData, sundayData)
-    # DC sugestion: Replace return statement with code below that returns dictionary of lists (easier JSON format to work with in JS)
-   
-    # values = {'Monday': mondayData, 'Tuesday': tuesdayData, 'Wednesday': wednesdayData, 'Thursday': thursdayData, 'Friday': fridayData, 'Saturday': saturdayData, 'Sunday': sundayData}
-    # return (values)
+    bikes = {}
+    for i in range (0, len(mondayData)):
+        bikes.setdefault('Monday',[]).append(mondayData[i])
+    for i in range (0, len(tuesdayData)):
+        bikes.setdefault('Tuesday',[]).append(tuesdayData[i])
+    for i in range (0, len(wednesdayData)):
+        bikes.setdefault('Wednesday',[]).append(wednesdayData[i])
+    for i in range (0, len(thursdayData)):
+        bikes.setdefault('Thursday',[]).append(thursdayData[i])
+    for i in range (0, len(fridayData)):
+        bikes.setdefault('Friday',[]).append(fridayData[i])
+    for i in range (0, len(saturdayData)):
+        bikes.setdefault('Saturday',[]).append(saturdayData[i])
+    for i in range (0, len(sundayData)):
+        bikes.setdefault('Sunday',[]).append(sundayData[i])
+    return bikes
 
 def get_weather(station_num):
     """Returns daily average data for REST API response providing json file with data for charts"""
