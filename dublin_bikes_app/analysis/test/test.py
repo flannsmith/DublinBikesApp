@@ -45,7 +45,6 @@ def get_hourly_avg(station_num  = 1):
 GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add query
     
     # Execute SQL query for hourly averages
-
     result = cursor.execute(hourlysql)
  
     data = cursor.fetchall()
@@ -104,17 +103,17 @@ GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add 
 
 @app.route("/")
 def chart():
-	values = get_daily_avg(1)
-	hourlyData = get_hourly_avg(1)
-	mondayData = hourlyData[0]
-	tuesdayData = hourlyData[1]
-	wednesdayData = hourlyData[2]
-	thursdayData = hourlyData[3]
-	fridayData = hourlyData[4]
-	saturdayData = hourlyData[5]
-	sundayData = hourlyData[6]
-	return render_template('chart.html', values=values, mondayData=mondayData, tuesdayData=tuesdayData, wednesdayData=wednesdayData, thursdayData=thursdayData, fridayData=fridayData, saturdayData=saturdayData, sundayData=sundayData)
+    values = get_daily_avg(1)
+    hourlyData = get_hourly_avg(1)
+    mondayData = hourlyData[0]
+    tuesdayData = hourlyData[1]
+    wednesdayData = hourlyData[2]
+    thursdayData = hourlyData[3]
+    fridayData = hourlyData[4]
+    saturdayData = hourlyData[5]
+    sundayData = hourlyData[6]
+    return render_template('chart.html', values=values, mondayData=mondayData, tuesdayData=tuesdayData, wednesdayData=wednesdayData, thursdayData=thursdayData, fridayData=fridayData, saturdayData=saturdayData, sundayData=sundayData)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5002, debug=True)
     #print(chart(1))
