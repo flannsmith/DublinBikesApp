@@ -42,7 +42,7 @@ def get_hourly_avg(station_num  = 1):
     conn = pymysql.connect(host, user=user, passwd=password,db=dbname)
     cursor = conn.cursor()
     # MySQL query to get average hourly availability for a given station
-    hourlysql = """SELECT DAYNAME(update_time) AS day, round(avg(bikes_available)) as available From bikesdata.stations where address='Clarendon Row' 
+    hourlysql = """SELECT DAYNAME(update_time) AS day, round(avg(bikes_available)) as available From bikesdata.stations where station_number = {} 
 GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add query
     
     # Execute SQL query for hourly averages
