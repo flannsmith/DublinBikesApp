@@ -61,7 +61,7 @@ GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add 
         
         values.append(res)
     
-    print(values) 
+    #print(values) 
     #jsondata=json.dumps(values,ensure_ascii=False)
     #print(jsondata[1:len(jsondata)-1])
     mondayData = []
@@ -71,8 +71,8 @@ GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add 
     fridayData = []
     saturdayData = []
     sundayData = []
-    print(values[0])
-    print(len(values))
+    #print(values[0])
+    #print(len(values))
     i = 0 
     for i in range(0, len(values)):
         for elem in values[i]:

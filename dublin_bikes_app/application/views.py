@@ -6,8 +6,8 @@ from application import analysis
 @app.route('/')
 def index():
     values = get_daily_avg(1)
-	hourlyData = get_hourly_avg(1)
-	return render_template('chart.html', values=values, mondayData=hourlyData['Monday'], tuesdayData=hourlyData['Tuesday'], wednesdayData=hourlyData['Wednesday'], thursdayData=hourlyData['Thursday'], fridayData=hourlyData['Friday'], saturdayData=hourlyData['Saturday'], sundayData=hourlyData['Sunday'])
+    hourlyData = get_hourly_avg(1)
+    return render_template('chart.html', values=values, mondayData=hourlyData['Monday'], tuesdayData=hourlyData['Tuesday'], wednesdayData=hourlyData['Wednesday'], thursdayData=hourlyData['Thursday'], fridayData=hourlyData['Friday'], saturdayData=hourlyData['Saturday'], sundayData=hourlyData['Sunday'])
 
 @app.route('/station_stats/<int:station_num>')
 def get_chart_data(station_num):
