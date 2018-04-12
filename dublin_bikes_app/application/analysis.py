@@ -5,10 +5,10 @@ import simplejson
 from lib2to3.fixer_util import Number
 #from application import db
 
-host = "bikes.ciqr4q2vn3eh.us-west-2.rds.amazonaws.com"
-user = "bikemaster"
-password = "listofletters"
-dbname = "bikesdata"
+host = "mydbbikedata.cyue8kftpxss.us-west-2.rds.amazonaws.com"
+user = "mydbbikedata"
+password = "hotwheels"
+dbname = "dbbikedata"
 
 
 def get_daily_avg(station_num  = 1):
@@ -16,11 +16,14 @@ def get_daily_avg(station_num  = 1):
     
     conn = pymysql.connect(host, user=user, passwd=password,db=dbname)
     cursor = conn.cursor()
+    # MySQL query to get average hourly availability for a given station
     sql = """SELECT round(avg(bikes_available)) From bikesdata.stations WHERE station_number = {} 
     GROUP BY DAYNAME(update_time);""".format(station_num)
+    # Execute SQL query for hourly averages
     result = cursor.execute(sql)
  
     data = cursor.fetchall()
+    # Get data from queries and structure for JSON file (dictionary)
 
     cursor.close()
     values = []
@@ -98,20 +101,7 @@ GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add 
                 sundayData.append(values[i]['available'])
                 break
     bikes = {}
-    for i in range (0, len(mondayData)):
-        bikes.setdefault('Monday',[]).append(mondayData[i])
-    for i in range (0, len(tuesdayData)):
-        bikes.setdefault('Tuesday',[]).append(tuesdayData[i])
-    for i in range (0, len(wednesdayData)):
-        bikes.setdefault('Wednesday',[]).append(wednesdayData[i])
-    for i in range (0, len(thursdayData)):
-        bikes.setdefault('Thursday',[]).append(thursdayData[i])
-    for i in range (0, len(fridayData)):
-        bikes.setdefault('Friday',[]).append(fridayData[i])
-    for i in range (0, len(saturdayData)):
-        bikes.setdefault('Saturday',[]).append(saturdayData[i])
-    for i in range (0, len(sundayData)):
-        bikes.setdefault('Sunday',[]).append(sundayData[i])
+    bikes = {'Monday':mondayData,'Tuesday':tuesdayData,'Wednesday':wednesdayData,'Thursday':thursdayData,'Friday':fridayData,'Saturday':saturdayData,'Sunday':sundayData}
     return bikes
 
 def get_weather(station_num):
