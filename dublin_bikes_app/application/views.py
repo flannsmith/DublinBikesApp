@@ -1,6 +1,5 @@
 from flask import render_template, jsonify, g
 from application import app
-from application import db
 from application import analysis
 
 @app.route('/')

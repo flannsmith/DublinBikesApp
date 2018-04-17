@@ -88,38 +88,6 @@
     <script src="{{ url_for('static', filename = 'js/siteScript.js') }}"></script>
     <!-- Google maps script -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcjZoPZRXKwKsnPyYeC93vDyM4oe168O8&callback=initMap" async defer></script>
-    <!-- <script>
-        // DOM element to hold chart
-        var chart = document.getElementById('daily-chart').getContext('2d');
-
-        // Initialize chart
-        var dailyChart = new Chart(chart,{
-
-            type: 'bar',
-            data: {
-                labels:[{% for item in values['daily_avg'] %}
-                            "{{item}}",
-                         {% endfor %}],
-
-                datasets: [
-                    {
-                        label: "Number",
-                        backgroundColor: "#1996ff",
-                        data: [{% for v in values['daily_avg'].values() %}
-                                    {{ v }},
-                                {% endfor %}]
-                    }
-                ]
-            },
-            options: {
-                legend: { display: false },
-                title: {
-                    display: true,
-                    text: 'Average number of free bikes per day'
-                }
-            }
-        });
-    </script> -->
 
 </body>
 
