@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Functions used by get_chart_data(station_num) in views.py TODO: Needs to be completed"""
+"""Functions used by get_chart_data(station_num) in views.py"""
 
 import sys
 sys.path.append('.')
 
 import pymysql
 import simplejson
-from config import user
-
-
+import db_config
 
 
 def get_daily_avg(station_num  = 1):
     """Returns daily average data for REST API response providing json file with data for charts"""
     
-    conn = pymysql.connect(user=config.user, password=config.password, host=config.host, database=config.database)
+    conn = pymysql.connect(user=db_config.user, password=db_config.password, host=db_config.host, database=db_config.database)
     cursor = conn.cursor()
     # MySQL query to get average hourly availability for a given station
     sql = """SELECT round(avg(bikes_available)) From bikesdata.stations WHERE station_number = {} 
@@ -39,7 +37,7 @@ def get_daily_avg(station_num  = 1):
 
 def get_hourly_avg(station_num  = 1):
     """Returns daily average data for REST API response providing json file with data for charts"""
-    conn = pymysql.connect(host, user=user, passwd=password,db=dbname)
+    conn = pymysql.connect(user=db_config.user, password=db_config.password, host=db_config.host, database=db_config.database)
     cursor = conn.cursor()
 
     # MySQL query to get average hourly availability for a given station
@@ -113,4 +111,7 @@ def get_weather(station_num):
     # Add code to populate dictionary from result
             
     return data
+
+if __name__ == '__main__':
+    print(db_config.user, db_config.host)
 
