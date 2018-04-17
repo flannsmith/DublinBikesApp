@@ -7,14 +7,17 @@
     <title> Bar Graph</title>
   </head>
   <body>
-      <div class="leftContainer">
-          <canvas id="barChart"></canvas>
+      <div class="barContainer">
+          <canvas id="dailyChart"></canvas>
       </div>
-      <div class="rightContainer">
+      <div class="lineContainer">
           <canvas id="hourlyChart"></canvas>
       </div>
+        <div class="mutipleContainer">
+          <canvas id="weatherChart"></canvas>
+      </div>
       <script>
-        var chart = document.getElementById('barChart').getContext('2d');
+        var chart = document.getElementById('dailyChart').getContext('2d');
           
         var barChart = new Chart(chart,{
             
@@ -54,49 +57,49 @@
                                 {% endfor %}],
                     label: "Monday",
                     borderColor: "#3e95cd",
-                    fill: false
+                    fill: true
                   }, { 
                     data: [{% for item in tuesdayData %}
                                     {{item}},
                                 {% endfor %}],
                     label: "Tuesday",
                     borderColor: "#8e5ea2",
-                    fill: false
+                    fill: true
                   }, { 
                     data: [{% for item in wednesdayData %}
                                     {{item}},
                                 {% endfor %}],
                     label: "Wednesday",
                     borderColor: "#3cba9f",
-                    fill: false
+                    fill: true
                   }, { 
                     data: [{% for item in thursdayData %}
                                     {{item}},
                                 {% endfor %}],
                     label: "Thursday",
                     borderColor: "#e8c3b9",
-                    fill: false
+                    fill: true
                   }, { 
                     data: [{% for item in fridayData %}
                                     {{item}},
                                 {% endfor %}],
                     label: "Friday",
                     borderColor: "#c45850",
-                    fill: false
+                    fill: true
                   }, { 
                     data: [{% for item in saturdayData %}
                                     {{item}},
                                 {% endfor %}],
                     label: "Saturday",
                     borderColor: "#e8c",
-                    fill: false
+                    fill: true
                   }, { 
                     data: [{% for item in sundayData %}
                                     {{item}},
                                 {% endfor %}],
                     label: "Sunday",
                     borderColor: "#c45",
-                    fill: false
+                    fill: true
                   }
                 ]
               },
@@ -104,9 +107,61 @@
                 title: {
                     display: true,
                     text: 'The hourly average'
+                },
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                    boxWidth: 80,
+                    fontColor: 'black'
+                    }
+                }
+            }
+                
+        });
+</script>
+      <script>
+        var weatChart = document.getElementById('weatherChart').getContext('2d');
+          
+        var barChart = new Chart(weatChart,{
+            
+            type: 'bar',
+            data: {
+                labels:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+                
+                datasets: [
+                    {
+                        label: "Number",
+                        backgroundColor: "#3cba9f",
+                        data : [{% for item in values %}
+                                    {{item}},
+                                {% endfor %}]
+                    },
+                    {
+                        label: "Number",
+                        backgroundColor: "#3cba9f",
+                        data : [{% for item in values %}
+                                    {{item}},
+                                {% endfor %}]
+                    },
+                    {
+                        label: "Number",
+                        backgroundColor: "#3cba9f",
+                        data : [{% for item in values %}
+                                    {{item}},
+                                {% endfor %}]
+                    }
+                    
+                ]
+            },
+            options: {
+                legend: { display: true },
+                title: {
+                    display: true,
+                    text: 'The weather'
                 }
             }
         });
-</script>
+      </script>
     </body>
 </html>
