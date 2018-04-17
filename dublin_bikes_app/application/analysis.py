@@ -1,7 +1,6 @@
 """Functions used by get_chart_data(station_num) in views.py TODO: Needs to be completed"""
 
 from application import db
-import simplejson
 
 def get_daily_avg(station_num):
     """Returns daily average data for REST API response providing json file with data for charts"""
@@ -36,14 +35,13 @@ def get_hourly_avg(station_num):
     result = db.engine.execute(sql) # result is a RowProxy
     
     # Get data from queries and structure for JSON file (dictionary)
+    
     values = []
-
+    
     for row in result:
-        print('ROW: ', dict(row))
-        res = {}
-        res['day'] = row[0] 
-        res['available'] = simplejson.dumps(row[1], use_decimal=True)  
-        values.append(res)
+        day_hour_avg = {}
+        day_hour_avg[row['day']] = row['available'] 
+        values.append(day_hour_avg)
 
     mondayData = []
     tuesdayData = []
@@ -56,25 +54,25 @@ def get_hourly_avg(station_num):
     i = 0 
     for i in range(0, len(values)):
         for elem in values[i]:
-            if values[i]['day'] == 'Monday':
+            if values[i] == 'Monday':
                 mondayData.append(values[i]['available'])
                 break
-            elif values[i]['day'] == 'Tuesday':
+            elif values[i] == 'Tuesday':
                 tuesdayData.append(values[i]['available'])
                 break
-            elif values[i]['day'] == 'Wednesday':
+            elif values[i] == 'Wednesday':
                 wednesdayData.append(values[i]['available'])
                 break
-            elif values[i]['day'] == 'Thursday':
+            elif values[i] == 'Thursday':
                 thursdayData.append(values[i]['available'])
                 break
-            elif values[i]['day'] == 'Friday':
+            elif values[i] == 'Friday':
                 fridayData.append(values[i]['available'])
                 break
-            elif values[i]['day'] == 'Saturday':
+            elif values[i] == 'Saturday':
                 saturdayData.append(values[i]['available'])
                 break
-            elif values[i]['day'] == 'Sunday':
+            elif values[i] == 'Sunday':
                 sundayData.append(values[i]['available'])
                 break
             
@@ -101,8 +99,4 @@ def get_weather(station_num):
     # Add code to populate dictionary from result
             
     return data
-
-if __name__ == '__main__':
-    get_hourly_avg(37)
-    
 
