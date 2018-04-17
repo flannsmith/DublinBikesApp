@@ -1,0 +1,2 @@
+'mysql+pymysql://mydbbikedata:hotwheels@mydbbikedata.cyue8kftpxss.us-west-2.rds.amazonaws.com:3306/bikesdata’
+

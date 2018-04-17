@@ -1,3 +1,8 @@
+'''
+Created on 12 Apr 2018
+
+@author: yulia
+'''
 from flask import Flask
 from flask import Markup
 from flask import Flask
@@ -98,9 +103,9 @@ GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add 
 
 @app.route("/")
 def chart():
-	values = get_daily_avg(1)
-	hourlyData = get_hourly_avg(1)
-	return render_template('chart.html', values=values, mondayData=hourlyData['Monday'], tuesdayData=hourlyData['Tuesday'], wednesdayData=hourlyData['Wednesday'], thursdayData=hourlyData['Thursday'], fridayData=hourlyData['Friday'], saturdayData=hourlyData['Saturday'], sundayData=hourlyData['Sunday'])
+    values = get_daily_avg(1)
+    hourlyData = get_hourly_avg(1)
+    return render_template('chart.html', values=values, mondayData=hourlyData['Monday'], tuesdayData=hourlyData['Tuesday'], wednesdayData=hourlyData['Wednesday'], thursdayData=hourlyData['Thursday'], fridayData=hourlyData['Friday'], saturdayData=hourlyData['Saturday'], sundayData=hourlyData['Sunday'])
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5005, debug=True)

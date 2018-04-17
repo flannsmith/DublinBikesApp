@@ -1,22 +1,5 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-      <!-- ref=http://www.chartjs.org/docs/latest/getting-started/installation.html-->
-    <title> Bar Graph</title>
-  </head>
-  <body>
-      <div class="barContainer">
-          <canvas id="dailyChart"></canvas>
-      </div>
-      <div class="lineContainer">
-          <canvas id="hourlyChart"></canvas>
-      </div>
-        <div class="mutipleContainer">
-          <canvas id="weatherChart"></canvas>
-      </div>
-      <script>
+//The first daily chart
+<script>
         var chart = document.getElementById('dailyChart').getContext('2d');
           
         var barChart = new Chart(chart,{
@@ -43,8 +26,9 @@
                 }
             }
         });
-      </script>
-      <script>
+</script>
+//The hourly chart
+<script>
         var CHART = document.getElementById('hourlyChart').getContext('2d');
           
         var lineChart = new Chart(CHART, {
@@ -120,7 +104,9 @@
                 
         });
 </script>
-      <script>
+
+//The weather chart
+<script>
         var weatChart = document.getElementById('weatherChart').getContext('2d');
           
         var barChart = new Chart(weatChart,{
@@ -162,6 +148,4 @@
                 }
             }
         });
-      </script>
-    </body>
-</html>
+</script>
