@@ -1,6 +1,5 @@
 from flask import render_template, jsonify, g
 from application import app
-from application import db
 from application import analysis
 
 @app.route('/')
@@ -20,7 +19,7 @@ def get_chart_data(station_num):
 
 
 @app.teardown_appcontext
-def close_connection(exception):
+def close_connection(exception): #FIXME
 	db = getattr(g, '_database', None)
 	if db is not None:
 		db.close()

@@ -3,11 +3,10 @@ import requests
 import mysql.connector
 from mysql.connector import errorcode
 import time
+import config
 
 try:
-  cnx = mysql.connector.connect(user='bikemaster', password='listofletters',
-                                host='bikes.ciqr4q2vn3eh.us-west-2.rds.amazonaws.com',
-                                database='bikesdata')
+  cnx = mysql.connector.connect(user=config.user, password=config.password, host=config.host, database=config.database)
 except mysql.connector.Error as err:
   if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
     print("Something is wrong with your user name or password")
