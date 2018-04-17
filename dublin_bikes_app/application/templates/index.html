@@ -65,11 +65,11 @@
                 </div>
                 <div id="dailyChart" class="col-sm-4" >
                     <h2>Daily averages chart</h2>
-                    <canvas id="barChart"></canvas>
+                    <canvas id="dailyChart"></canvas>
                 </div>
                 <div class="col-sm-4">
                     <h2>Hourly averages chart</h2>
-                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
+                    <canvas id="hourlyChart"></canvas>
                 </div>
             </div>
             <div class="row top-pad-60 bottom-pad-60">
@@ -93,34 +93,6 @@
     <script src="{{ url_for('static', filename = 'js/siteScript.js') }}"></script>
     <!-- Google maps script -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcjZoPZRXKwKsnPyYeC93vDyM4oe168O8&callback=initMap" async defer></script>
-    <script>
-        var chart = document.getElementById('dailyChart').getContext('2d');
-          
-        var barChart = new Chart(chart,{
-            
-            type: 'bar',
-            data: {
-                labels:["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]，
-                
-                datasets: [
-                    {
-                        label: "Number",
-                        backgroundColor: "#3cba9f",
-                        data : [{% for item in values %}
-                                    {{item}},
-                                {% endfor %}]
-                    }
-                ]
-            },
-            options: {
-                legend: { display: true },
-                title: {
-                    display: true,
-                    text: 'The daily average'
-                }
-            }
-        });
-      </script>
 
 </body>
 
