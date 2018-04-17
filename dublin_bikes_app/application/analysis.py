@@ -1,20 +1,20 @@
+# -*- coding: utf-8 -*-
 """Functions used by get_chart_data(station_num) in views.py TODO: Needs to be completed"""
-import json
+
+import sys
+sys.path.append('.')
+
 import pymysql
 import simplejson
-from lib2to3.fixer_util import Number
-#from application import db
+from config import user
 
-host = "mydbbikedata.cyue8kftpxss.us-west-2.rds.amazonaws.com"
-user = "mydbbikedata"
-password = "hotwheels"
-dbname = "dbbikedata"
+
 
 
 def get_daily_avg(station_num  = 1):
     """Returns daily average data for REST API response providing json file with data for charts"""
     
-    conn = pymysql.connect(host, user=user, passwd=password,db=dbname)
+    conn = pymysql.connect(user=config.user, password=config.password, host=config.host, database=config.database)
     cursor = conn.cursor()
     # MySQL query to get average hourly availability for a given station
     sql = """SELECT round(avg(bikes_available)) From bikesdata.stations WHERE station_number = {} 
@@ -38,14 +38,13 @@ def get_daily_avg(station_num  = 1):
 
 
 def get_hourly_avg(station_num  = 1):
-
     """Returns daily average data for REST API response providing json file with data for charts"""
     conn = pymysql.connect(host, user=user, passwd=password,db=dbname)
     cursor = conn.cursor()
 
     # MySQL query to get average hourly availability for a given station
     hourlysql = """SELECT DAYNAME(update_time) AS day, round(avg(bikes_available)) as available From bikesdata.stations where station_number = {} 
-GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add query
+GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num)
     
     # Execute SQL query for hourly averages
     result = cursor.execute(hourlysql)
@@ -55,7 +54,7 @@ GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add 
     cursor.close()
     values = []
 
-    # Add code to populate dictionary from result
+    # Populate dictionary from result
     for row in data:
         res = {} 
         res['day'] = row[0] 
@@ -95,7 +94,6 @@ GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add 
                 sundayData.append(values[i]['available'])
                 break
                 
-    bikes = {}
     bikes = {'Monday':mondayData,'Tuesday':tuesdayData,'Wednesday':wednesdayData,'Thursday':thursdayData,'Friday':fridayData,'Saturday':saturdayData,'Sunday':sundayData}
     return bikes
 
@@ -107,7 +105,7 @@ def get_weather(station_num):
     sql = """replace this with SQL query for specified station number {};""".format(station_num) #TODO: Add query
     
     # Execute SQL query for weather
-#     result = db.engine.execute(sql) # result is a RowProxy
+#     result = db.engine.execute(sql) #TODO: uncomment when query complete
     
     # Get data from queries and structure for JSON file (dictionary)
     data = {}

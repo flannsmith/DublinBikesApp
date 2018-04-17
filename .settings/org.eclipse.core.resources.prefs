@@ -1,3 +1,6 @@
 eclipse.preferences.version=1
+encoding//dublin_bikes_app/__init__.py=utf-8
+encoding//dublin_bikes_app/application/analysis.py=utf-8
 encoding//dublin_bikes_app/cli.py=utf-8
+encoding//dublin_bikes_app/jcDscrapper.py=utf-8
 encoding/setup.py=utf-8
