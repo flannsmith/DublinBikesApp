@@ -114,6 +114,3 @@ def get_weather(station_num):
             
     return data
 
-if __name__ == '__main__':
-    print(db_config.user, db_config.host)
-
