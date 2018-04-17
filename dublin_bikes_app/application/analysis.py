@@ -9,51 +9,51 @@ import simplejson
 import db_config
 
 
-def get_daily_avg(station_num  = 1):
+def get_daily_avg(station_num=37):
     """Returns daily average data for REST API response providing json file with data for charts"""
     
     conn = pymysql.connect(user=db_config.user, password=db_config.password, host=db_config.host, database=db_config.database)
     cursor = conn.cursor()
-    # MySQL query to get average hourly availability for a given station
-    sql = """SELECT round(avg(bikes_available)) From bikesdata.stations WHERE station_number = {} 
-    GROUP BY DAYNAME(update_time);""".format(station_num)
-    # Execute SQL query for hourly averages
-    result = cursor.execute(sql)
+    
+    # MySQL query to get average daily availability for a given station
+    sql = """SELECT dayname(update_time) AS 'day', ROUND(AVG(bikes_available)) AS 'bikes'
+    FROM bikesdata.stations
+    WHERE station_number = {}
+    GROUP BY dayname(update_time);""".format(station_num)
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    cursor.close()   
  
-    data = cursor.fetchall()
     # Get data from queries and structure for JSON file (dictionary)
-
-    cursor.close()
-    values = []
+    data = {}
     
-    for row in data:
-        items = simplejson.dumps(row, use_decimal=True)
-        values.append(items)
-        
-    return values
+    for row in result:
+        data[row[0]] = row[1] # Note each row in RowProxy is dictionary: {col_name: col_value_for_row}
+    
+    return data
 
 
 
 
-def get_hourly_avg(station_num  = 1):
+def get_hourly_avg(station_num=37):
     """Returns daily average data for REST API response providing json file with data for charts"""
     conn = pymysql.connect(user=db_config.user, password=db_config.password, host=db_config.host, database=db_config.database)
     cursor = conn.cursor()
 
     # MySQL query to get average hourly availability for a given station
-    hourlysql = """SELECT DAYNAME(update_time) AS day, round(avg(bikes_available)) as available From bikesdata.stations where station_number = {} 
-GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num)
+    sql = """SELECT DAYNAME(update_time) AS day, round(avg(bikes_available)) as available From bikesdata.stations where station_number = {} 
+    GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num)
     
     # Execute SQL query for hourly averages
-    result = cursor.execute(hourlysql)
-    data = cursor.fetchall()
-
-    # Get data from queries and structure for JSON file (dictionary)
+    cursor.execute(sql)
+    result = cursor.fetchall()
     cursor.close()
+
+    # Get data from queries and structure for JSON file (dictionary of lists)
+    
     values = []
 
-    # Populate dictionary from result
-    for row in data:
+    for row in result:
         res = {} 
         res['day'] = row[0] 
         res['available'] = simplejson.dumps(row[1], use_decimal=True)  
@@ -91,9 +91,11 @@ GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num)
             elif values[i]['day'] == 'Sunday':
                 sundayData.append(values[i]['available'])
                 break
-                
-    bikes = {'Monday':mondayData,'Tuesday':tuesdayData,'Wednesday':wednesdayData,'Thursday':thursdayData,'Friday':fridayData,'Saturday':saturdayData,'Sunday':sundayData}
-    return bikes
+            
+    # Populate output dictionary with lists of hourly averages from result            
+    data = {'Monday':mondayData,'Tuesday':tuesdayData,'Wednesday':wednesdayData,'Thursday':thursdayData,'Friday':fridayData,'Saturday':saturdayData,'Sunday':sundayData}
+    
+    return data
 
 def get_weather(station_num):
     """Returns daily average data for REST API response providing json file with data for charts"""
