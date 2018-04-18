@@ -86,7 +86,7 @@ function createLineChart(elemId, dataSeries, labels, title) {
               }, {
                 data: dataSeries[2],
                 label: "Wednesday",
-                borderColor: "#aeff17",
+                borderColor: "#17ffab",
                 fill: false
               }, {
                 data: dataSeries[3],
@@ -144,13 +144,12 @@ function updateData(stationNumber) {
         document.getElementById('station-info').innerHTML = html;
     })
     .fail(function() {
-        console.log( "Error: Failed to get JSON data from "+ jcdecUrl );
+        console.log("Error: Failed to get JSON data from "+ jcdecUrl);
     });
 
     // Update charts
     var flaskUrl = $SCRIPT_ROOT + "/station_stats/" + stationNumber;
     $.getJSON(flaskUrl, function(result) {
-        console.log(result.station_stats.daily_avg);
         // Daily chart
         //- Store and prepare the new data from the JSON file
         var dailyData = result.station_stats.daily_avg;
@@ -201,7 +200,7 @@ function updateCharts(stationNumber) {
         hourlyChart.update();
     })
     .fail(function() {
-        console.log( "Error: Failed to get JSON data from "+ flaskUrl );
+        console.log("Error: Failed to get JSON data from "+ flaskUrl);
     });
 }
 
@@ -229,9 +228,9 @@ updateCharts("37");
 // Initialize hourly average chart
 var chartDataHourly = new Array(7); // initial dummy data; makes initial animation smoother
 for (var i = 0; i < 7; i++) {
-    chartDataHourly[i] = Array(24).fill(0);
+    chartDataHourly[i] = Array(20).fill(0);
 }
-var labelsHourly = ["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"];
+var labelsHourly = ["05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00", "00:00"];
 // Create daily chart in canvas on html page
 var hourlyChart = createLineChart("hourly-chart", chartDataHourly, labelsHourly, "Average bike availability per hour per day");
 // Add inital real data from database via API call to flask app
