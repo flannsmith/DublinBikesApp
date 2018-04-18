@@ -5,8 +5,8 @@ from mysql.connector import errorcode
 import time
 
 try:
-  cnx = mysql.connector.connect(user='bikemaster', password='listofletters',
-                                host='bikes.ciqr4q2vn3eh.us-west-2.rds.amazonaws.com',
+  cnx = mysql.connector.connect(user='mydbbikedata', password='hotwheels',
+                                host='mydbbikedata.cyue8kftpxss.us-west-2.rds.amazonaws.com',
                                 database='bikesdata')
 except mysql.connector.Error as err:
   if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
