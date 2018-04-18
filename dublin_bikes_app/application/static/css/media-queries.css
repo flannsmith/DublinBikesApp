@@ -9,11 +9,6 @@
         height: 300px;
         margin-top: 10px;
     }
-
-    h3 {
-        font-size: 26px;
-        line-height: 30px;
-    }
 }
 
 @media only screen and (max-width: 780px) {
@@ -35,17 +30,21 @@
 
     #info-map {
         padding-top: 40px;
+        padding-bottom: 40px;
     }
 
     #map {
         margin-top: 30px;
     }
 
-    .descript {
+    .daily-descript, .detailed-descript {
         font-size: 20px;
         line-height: 38px;
     }
-}
+
+    .container-fullwidth {padding: 20px 40px 40px 40px}
+
+    .container-middle {padding: 20px 30px 20px 30px}
 
     .column-two {
         display: block;
@@ -74,6 +73,13 @@
         text-align: center;
     }
 
+    .title h1 {
+        display: block;
+        font-size: 26px;
+        line-height: 32px;
+        padding-top: 10px;
+    }
+
     .daily-descript, .detailed-descript {
         font-size: 20px;
         line-height: 38px;
@@ -83,34 +89,22 @@
 
     .container-middle {padding: 20px 30px 40px 30px}
 
-    .column-two {
-        padding: 0 0 30px 0;
-    }
-
     #info-map {
-        padding-top: 40px;
+        padding-top: 30px;
+        padding-bottom: 30px;
     }
-
-    .title h1 {
-        display: block;
-        font-size: 32px;
-        line-height: 32px;
-        padding-top: 10px;
-    }
-
-    .footer-info, .bold-blue {display: none;}
-
-    #analysis {padding-bottom: 80px;}
-
 }
 
 @media only screen and (max-width: 450px) {
 
-    #info-map {
+    #info-panel {
         padding-top: 20px;
     }
 
-    #map {margin-top: 30px;}
+    #map {
+        margin-top: 30px;
+    }
+
 
     .column-two {
         display: block;

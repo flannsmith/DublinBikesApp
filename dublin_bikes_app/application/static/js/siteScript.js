@@ -295,3 +295,28 @@ function addMarkers(map, url) {
         }
     });
 }
+
+// Smooth scrolling back to top of page
+$(".footer a[href='#top']").on('click', function(event) {
+
+  // Make sure this.hash has a value before overriding default behavior
+  if (this.hash !== "") {
+
+    // Prevent default anchor click behavior
+    event.preventDefault();
+
+    // Store hash
+    var hash = this.hash;
+
+    // jQuery's animate() method to smoothly scroll to top
+    $('html, body').animate({
+      scrollTop: $(hash).offset().top - 100
+  }, 700, function(){
+
+    // Add hash (#) to URL when done scrolling (default click behavior)
+      window.location.hash = hash;
+    });
+
+  }
+
+});

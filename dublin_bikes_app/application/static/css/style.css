@@ -256,12 +256,17 @@ Title (top) Banner
     color: #1996ff;
     padding:0 20px;
     line-height: 96px;
-    white-space: nowrap;
+    /white-space: nowrap;
 }
 
 /* --------------------------------
 Info & map panel
 -------------------------------- */
+
+#info-map {
+    padding-top: 60px;
+    padding-bottom: 60px;
+}
 
 #map {
     height: 350px;
