@@ -33,18 +33,22 @@
         </header>
 
         <!--Station info and map section -->
-        <section id="info+map" class="container top-pad-60 bottom-pad-60">
+        <section id="info-map" class="container top-pad-60 bottom-pad-60">
             <!-- Panel for displaying station information -->
             <div class="row">
                 <div class="col-sm-6 right-pad-60 left-pad-60">
                     <div id="station-info" class="text-content">
                         <h2>Station Information</h2>
-                        <p>Welcome {{ test }}to Dublin Bikes Monitor! Select a station from the drop-down menu to check the current number of available bikes and free stands. Or find the station on the map and click its marker. These circle markers use colour to indicate bike availability and size to indicate stand availability.</p>
+                        <p>Welcome to Dublin Bikes Tracker! Select a station from the drop-down menu to check the current number of available bikes and free stands. Or find the station on the map and click its marker. These circle markers use colour to indicate bike availability and size to indicate stand availability.</p>
                     </div>
-                        <div class="dropdown">
+                    <div class="dropdown center-align">
                         <button class="dropdown-toggle" type="button" data-toggle="dropdown">Select a station
                         <span class="caret"></span></button>
-                        <ul id="station-dropdown" class="dropdown-menu scrollable-menu" role="menu"></ul>
+                        <ul id="station-dropdown" class="dropdown-menu scrollable-menu center-align" role="menu"></ul>
+                    </div>
+                    <div id="weather" class="top-pad-20">
+                        <div><h3>Current weather</h3></div>
+                        <div id="weather-descript" class="descript center-align"></div>
                     </div>
                 </div>
                 <!-- Google map of around station locations -->
@@ -55,7 +59,7 @@
         <!-- Charts -->
         <section id="analysis" class="container top-pad-20">
             <div class="row">
-                <div class="chart col-sm-6">
+                <div class="col-sm-6">
                     <h2>Daily Availability</h2>
                     <canvas id="daily-chart"></canvas>
                 </div>
@@ -64,19 +68,13 @@
                     <canvas id="hourly-chart"></canvas>
                 </div>
             </div>
-            <div class="row top-pad-60 bottom-pad-60">
-                <div class="center-align">
-                    <h2>Weather Forecast</h2>
-                    <div><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></div>
-                </div>
-            </div>
         </section>
 
         <!-- Footer -->
         <footer class="footer container-fullwidth">
             <a href="#top" class="to-top-button"><i class="fa fa-sort-up fa-2x"></i></a>
             <a href="/"><h2>Dublin Bikes Tracker</h2></a>
-            <div class="footer-info"><span class="bold-blue">Data:&nbsp;</span><a href="https://openweathermap.org" target="blank">openweathermap.org</a></div>
+            <div class="footer-info"><a href="/"><img src="{{ url_for('static', filename = 'images/logo.svg') }}" alt="site logo"></a></div>
             <div class="footer-info"><span class="bold-blue">Email:&nbsp;</span>info@dbtracker.org</div>
         </footer>
     </div>

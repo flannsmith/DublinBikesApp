@@ -4,26 +4,39 @@
 //--------------------------------------------------------------
 const jcdUrl = "https://api.jcdecaux.com/vls/v1/stations";
 const jcdParams = "?contract=Dublin&apiKey=8b0bfe2e205616b7ebec9f675e2168f7b9726683";
+const weatherUrl = "http://api.openweathermap.org/data/2.5/forecast?id=7778677&APPID=2a4ae98d608786fcf5b6bbcf5a9467d6"
 
 //--------------------------------------------------------------
 // Functions
 //--------------------------------------------------------------
 
+// Gets current weather from opeweathermaps API and displays in wether panel (div)
+function currentWeather(weatherUrl) {
+    $.getJSON(weatherUrl, function(w_result) {
+        var weather = w_result.list[0].weather[0]
+        $("#weather-descript").html(weather.description + "&nbsp" + "<img src='http://openweathermap.org/img/w/"
+        + weather.icon
+        + ".png' alt='weather icon'>");
+    })
+    .fail(function() {
+        console.log("Error: Failed to get JSON data from "+ weatherUrl);
+    });
+}
+
 // Generates list of stations for dropdown menu
 function dropDownStations(url) {
     $.getJSON(url, function(result){
         var stationData = result;
-        //console.log(stationData);
         var html = "";
         for (var i = 0; i < stationData.length; i++) {
             var name = stationData[i].name;
             var number = stationData[i].number;
             html += ('<li><a onclick="updateData(\''+ number + '\')">' + name + '</a></li>');
         }
-        document.getElementById("station-dropdown").innerHTML = html;
+        $("#station-dropdown").html(html);
     })
     .fail(function() {
-        console.log( "Error: Failed to get JSON data from "+ url );
+        console.log("Error: Failed to get JSON data from "+ url);
     });
 }
 
@@ -136,11 +149,14 @@ function updateData(stationNumber) {
 
     // Update station info panel
     var jcdecUrl = jcdUrl+"/"+stationNumber+jcdParams;
-    $.getJSON(jcdecUrl, function(result) {
+    //var html = ""
+    $.getJSON(jcdecUrl, function(jcd_result) {
         // Station info
-        var html = "<h2>" + result.address + "</h2><div class='text-content'>";
-        html += "<p>Available bikes: " + result.available_bikes + "</p>";
-        html += "<p>Free bike stands: " + result.available_bike_stands + "</p></div>";
+        var html = "<h2>" + jcd_result.address + "</h2><div class='descript top-pad-20 center-align'>";
+        html += "<p>Available bikes: " + jcd_result.available_bikes + "</p>";
+        html += "<p>Free bike stands: " + jcd_result.available_bike_stands + "</p>";
+        html += "<p>Station status: " + jcd_result.status + "</p></div>";
+        // Insert all the new html into station info panel
         document.getElementById('station-info').innerHTML = html;
     })
     .fail(function() {
@@ -148,31 +164,7 @@ function updateData(stationNumber) {
     });
 
     // Update charts
-    var flaskUrl = $SCRIPT_ROOT + "/station_stats/" + stationNumber;
-    $.getJSON(flaskUrl, function(result) {
-        // Daily chart
-        //- Store and prepare the new data from the JSON file
-        var dailyData = result.station_stats.daily_avg;
-        var dailyChartData = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
-        //- Modify the chart data
-        dailyChart.data.datasets[0].data = dailyChartData;
-        //- Update the chart display
-        dailyChart.update();
-
-        // Hourly chart
-        //- Store and prepare the new data from the JSON file
-        var hourlyData = result.station_stats.hourly_avg;
-        var hourlyChartData = [hourlyData.Monday, hourlyData.Tuesday, hourlyData.Wednesday, hourlyData.Thursday, hourlyData.Friday, hourlyData.Saturday, hourlyData.Sunday];
-        //- Modify the chart data
-        for (var i = 0; i < hourlyChartData.length; i++) {
-            hourlyChart.data.datasets[i].data = hourlyChartData[i];
-        }
-        //- Update the chart display
-        hourlyChart.update();
-    })
-    .fail(function() {
-        console.log( "Error: Failed to get JSON data from "+ flaskUrl );
-    });
+    updateCharts(stationNumber)
 }
 
 // Update charts only (mainly for chart initialization)
@@ -209,13 +201,14 @@ function updateCharts(stationNumber) {
 // Main
 //--------------------------------------------------------------
 
-/***** Dropdown list to select station *****/
+/***** Diplay current weather *****/
+currentWeather(weatherUrl)
 
+/***** Dropdown list to select station *****/
 dropDownStations("/static/data/station_data.json");
 
 
 /***** Charts ******/
-
 // Initialize daily average chart
 var url = $SCRIPT_ROOT + "/station_stats/" + "37";
 var chartDataDaily = [4,4,4,4,4,4,4]; // initial dummy data; makes initial animation smoother
@@ -236,8 +229,8 @@ var hourlyChart = createLineChart("hourly-chart", chartDataHourly, labelsHourly,
 // Add inital real data from database via API call to flask app
 updateCharts("37");
 
-/***** Google Map *****/
 
+/***** Google Map *****/
 // Adds Google map to display panel using Google Maps
 function initMap() {
     //Create map object and specify the element in which to display it
@@ -297,7 +290,7 @@ function addMarkers(map, url) {
                 number: station.number
             });
             // Add listener to update current station data and charts on click
-            marker.addListener("click", updateData.bind(null, marker.number)); // FIXME: chart 2
+            marker.addListener("click", updateData.bind(null, marker.number));
 
         }
     });
