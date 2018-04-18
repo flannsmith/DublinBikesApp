@@ -118,7 +118,7 @@ function createLineChart(elemId, dataSeries, labels, title) {
             },
             legend: {
                 display: true,
-                position: 'top',
+                position: 'bottom',
                 labels: {
                 boxWidth: 10,
                 fontColor: 'black'
@@ -228,9 +228,9 @@ updateCharts("37");
 // Initialize hourly average chart
 var chartDataHourly = new Array(7); // initial dummy data; makes initial animation smoother
 for (var i = 0; i < 7; i++) {
-    chartDataHourly[i] = Array(20).fill(0);
+    chartDataHourly[i] = Array(19).fill(0);
 }
-var labelsHourly = ["05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00", "00:00"];
+var labelsHourly = ["05:30","06:30","07:30","08:30","09:30","10:30","11:30","12:30","13:30","14:30","15:30","16:30","17:30","18:30","19:30","20:30","21:30","22:30","23:30", "00:30"];
 // Create daily chart in canvas on html page
 var hourlyChart = createLineChart("hourly-chart", chartDataHourly, labelsHourly, "Average bike availability per hour per day");
 // Add inital real data from database via API call to flask app
