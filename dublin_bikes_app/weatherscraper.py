@@ -1,10 +1,8 @@
 import json
 import requests
 from datetime import datetime
-from flask import Flask
 import mysql.connector
 from mysql.connector import errorcode
-import time
 
 try:
   cnx = mysql.connector.connect(user='mydbbikedata', password='hotwheels',
