@@ -6,10 +6,10 @@ def get_daily_avg(station_num):
     """Returns daily average data for REST API response providing json file with data for charts"""
     
     # MySQL query to get average daily availability for a given station
-    sql_daily = """SELECT dayname(update_time) AS 'day', ROUND(AVG(bikes_available)) AS 'bikes'
+    sql_daily = """SELECT DAYNAME(update_time) AS 'day', ROUND(AVG(bikes_available)) AS 'bikes'
     FROM bikesdata.stations
     WHERE station_number = {}
-    GROUP BY dayname(update_time);""".format(station_num)
+    GROUP BY DAYNAME(update_time);""".format(station_num)
     
          
     # Execute SQL query for daily averages
@@ -28,21 +28,16 @@ def get_hourly_avg(station_num):
     """Returns daily average data for REST API response providing JSON file with data for charts"""
     
     # MySQL query to get average hourly availability for a given station
-    sql = """SELECT DAYNAME(update_time) AS day, round(avg(bikes_available)) AS available From bikesdata.stations where station_number = {} 
-    GROUP BY DAY(update_time), HOUR(update_time);""".format(station_num) #TODO: Add query
+    sql = """SELECT DAYNAME(update_time) AS day, ROUND(AVG(bikes_available)) AS available
+    FROM bikesdata.stations where station_number = {} 
+    GROUP BY DAYNAME(update_time), HOUR(update_time);""".format(station_num) #TODO: Add query
     
     # Execute SQL query for hourly averages
     result = db.engine.execute(sql) # result is a RowProxy
     
-    # Get data from queries and structure for JSON file (dictionary)
+    # Get data from queries and structure for JSON file (dictionary of lists)
     
-    values = []
-    
-    for row in result:
-        day_hour_avg = {}
-        day_hour_avg[row['day']] = row['available'] 
-        values.append(day_hour_avg)
-
+    #- Lists to hold hourly averages of availability
     mondayData = []
     tuesdayData = []
     wednesdayData = []
@@ -50,38 +45,29 @@ def get_hourly_avg(station_num):
     fridayData = []
     saturdayData = []
     sundayData = []
-
-    i = 0 
-    for i in range(0, len(values)):
-        for elem in values[i]:
-            if values[i] == 'Monday':
-                mondayData.append(values[i]['available'])
-                break
-            elif values[i] == 'Tuesday':
-                tuesdayData.append(values[i]['available'])
-                break
-            elif values[i] == 'Wednesday':
-                wednesdayData.append(values[i]['available'])
-                break
-            elif values[i] == 'Thursday':
-                thursdayData.append(values[i]['available'])
-                break
-            elif values[i] == 'Friday':
-                fridayData.append(values[i]['available'])
-                break
-            elif values[i] == 'Saturday':
-                saturdayData.append(values[i]['available'])
-                break
-            elif values[i] == 'Sunday':
-                sundayData.append(values[i]['available'])
-                break
-            
-    # Populate output dictionary with lists of hourly averages from result            
-    data = {'Monday':mondayData,'Tuesday':tuesdayData,'Wednesday':wednesdayData,'Thursday':thursdayData,'Friday':fridayData,'Saturday':saturdayData,'Sunday':sundayData}
     
-    return data
+    #- Populate lists with corresponding values from result
+    for row in result:
+        if row['day'] == 'Monday':
+            mondayData.append(row['available'])
+        elif row['day'] == 'Tuesday':
+            tuesdayData.append(row['available'])
+        elif row['day'] == 'Wednesday':
+            wednesdayData.append(row['available'])
+        elif row['day'] == 'Thursday':
+            thursdayData.append(row['available'])
+        elif row['day'] == 'Friday':
+            fridayData.append(row['available'])
+        elif row['day'] == 'Saturday':
+            saturdayData.append(row['available'])
+        else:
+            sundayData.append(row['available'])
+            
+    #- Populate output dictionary with lists of hourly averages from result            
+    data = {'Monday':mondayData,'Tuesday':tuesdayData,'Wednesday':wednesdayData,'Thursday':thursdayData,'Friday':fridayData,'Saturday':saturdayData,'Sunday':sundayData}
             
     return data
+
 
 def get_weather(station_num):
     """Returns daily average data for REST API response providing json file with data for charts"""
