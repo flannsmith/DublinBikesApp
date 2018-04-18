@@ -2,12 +2,12 @@ import json
 import requests
 from datetime import datetime
 import mysql.connector
-from mysql.connector import errorcodeimport time
-import config
+from mysql.connector import errorcode
 
 try:
-  cnx = mysql.connector.connect(user=config.user, password=config.password, host=config.host, database=config.database)
-
+  cnx = mysql.connector.connect(user='mydbbikedata', password='hotwheels',
+                                host='mydbbikedata.cyue8kftpxss.us-west-2.rds.amazonaws.com',
+                                database='bikesdata')
 except mysql.connector.Error as err:
   if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
     print("Something is wrong with your user name or password")
@@ -27,7 +27,7 @@ else:
 
   url = 'http://api.openweathermap.org/data/2.5/forecast?id=7778677&APPID=2a4ae98d608786fcf5b6bbcf5a9467d6'
   response = requests.get(url)
-  #print("JSON Object received")
+  print("JSON Object received")
   openWeatherData = json.loads(response.text)
 
   for item in openWeatherData["list"]:
@@ -45,11 +45,6 @@ else:
     wind_dir = item["wind"]["deg"]
     cloud_cover = item["clouds"]["all"]
 
-    LUD = str(datetime.now())
-
-    # LUD = time.strftime(
-    #     "%Y-%m-%d %H:%M:%S", time.gmtime(time_stamp / 1000.0))
-
     weatherData = (time_stamp, weather_id, main_weather, description,
                     weather_icon, temperature, humidity, pressure, temp_min, temp_max, wind_speed, wind_dir, cloud_cover)
 
@@ -59,6 +54,7 @@ else:
         print("Something went wrong inserting the data at: {}".format(err))
     else:
       print("Data Inserted at: {}".format(LUD))
+      
   cnx.commit()
   cnx.close()
 

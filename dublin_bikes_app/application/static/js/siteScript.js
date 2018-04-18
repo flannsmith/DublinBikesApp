@@ -5,40 +5,11 @@
 const jcdUrl = "https://api.jcdecaux.com/vls/v1/stations";
 const jcdParams = "?contract=Dublin&apiKey=8b0bfe2e205616b7ebec9f675e2168f7b9726683";
 
-// var stationData = {};
-// var stationsUpdated = false;
-
 //--------------------------------------------------------------
 // Functions
 //--------------------------------------------------------------
 
-function updateData(stationNumber) {
-    var jcdecUrl = jcdUrl+"/"+stationNumber+jcdParams;
-    $.getJSON(jcdecUrl, function(result) {
-        // Station info
-        var html = "<h2>" + result.address + "</h2><div class='text-content'>";
-        html += "<p>Available bikes: " + result.available_bikes + "</p>";
-        html += "<p>Free bike stands: " + result.available_bike_stands + "</p></div>";
-        document.getElementById('station-info').innerHTML = html;
-    })
-    .fail(function() {
-        console.log( "Error: Failed to get JSON data from "+ jcdecUrl );
-    });
-
-    var flaskUrl = $SCRIPT_ROOT + "/station_stats/" + stationNumber;
-
-    $.getJSON(flaskUrl, function(result) {
-        console.log(result.station_stats.daily_avg);
-        var dailyData = result.station_stats.daily_avg;
-        var chartData = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
-        dailyChart.data.datasets[0].data = chartData;
-        dailyChart.update();
-    })
-    .fail(function() {
-        console.log( "Error: Failed to get JSON data from "+ flaskUrl );
-    });
-}
-
+// Generates list of stations for dropdown menu
 function dropDownStations(url) {
     $.getJSON(url, function(result){
         var stationData = result;
@@ -47,7 +18,7 @@ function dropDownStations(url) {
         for (var i = 0; i < stationData.length; i++) {
             var name = stationData[i].name;
             var number = stationData[i].number;
-            html += ('<li><a href="#" onclick="updateData(\''+ number + '\')">' + name + '</a></li>');
+            html += ('<li><a onclick="updateData(\''+ number + '\')">' + name + '</a></li>');
         }
         document.getElementById("station-dropdown").innerHTML = html;
     })
@@ -56,11 +27,12 @@ function dropDownStations(url) {
     });
 }
 
+// Generates Chart.js bar chart
 function createBarChart(elemId, chartData, labels, title) {
     // DOM element to hold chart
     var chart = document.getElementById(elemId).getContext('2d');
 
-    // Initialize chart
+    // Create chart
     var barChart = new Chart(chart,{
         type: 'bar',
         data: {
@@ -88,46 +60,150 @@ function createBarChart(elemId, chartData, labels, title) {
         }
     });
 
-    return barChart
+    return barChart;
 }
 
-function updateCharts(stationNumber) {
-    var flaskUrl = $SCRIPT_ROOT + "/station_stats/" + stationNumber;
+// Generates Chart.js line chart
+function createLineChart(elemId, dataSeries, labels, title) {
+    // DOM element to hold chart
+    var CHART = document.getElementById(elemId).getContext('2d');
 
+    // Create chart
+    var lineChart = new Chart(CHART, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: dataSeries[0],
+                label: "Monday",
+                borderColor: "rgb(36, 77, 255)",
+                fill: false
+              }, {
+                data: dataSeries[1],
+                label: "Tuesday",
+                borderColor: "#8e5ea2",
+                fill: false
+              }, {
+                data: dataSeries[2],
+                label: "Wednesday",
+                borderColor: "#17ffab",
+                fill: false
+              }, {
+                data: dataSeries[3],
+                label: "Thursday",
+                borderColor: "#64fc7c",
+                fill: false
+              }, {
+                data: dataSeries[4],
+                label: "Friday",
+                borderColor: "#ff3d4f",
+                fill: false
+              }, {
+                data: dataSeries[5],
+                label: "Saturday",
+                borderColor: "#ff38a4",
+                fill: false
+              }, {
+                data: dataSeries[6],
+                label: "Sunday",
+                borderColor: "#3e95cd",
+                fill: false
+              }
+            ]
+          },
+        options:{
+            title: {
+                display: true,
+                text: title
+            },
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                boxWidth: 10,
+                fontColor: 'black'
+                }
+            }
+        }
+
+    });
+
+    return lineChart;
+}
+
+// Update station availability panel and charts
+function updateData(stationNumber) {
+
+    // Update station info panel
+    var jcdecUrl = jcdUrl+"/"+stationNumber+jcdParams;
+    $.getJSON(jcdecUrl, function(result) {
+        // Station info
+        var html = "<h2>" + result.address + "</h2><div class='text-content'>";
+        html += "<p>Available bikes: " + result.available_bikes + "</p>";
+        html += "<p>Free bike stands: " + result.available_bike_stands + "</p></div>";
+        document.getElementById('station-info').innerHTML = html;
+    })
+    .fail(function() {
+        console.log("Error: Failed to get JSON data from "+ jcdecUrl);
+    });
+
+    // Update charts
+    var flaskUrl = $SCRIPT_ROOT + "/station_stats/" + stationNumber;
     $.getJSON(flaskUrl, function(result) {
-        console.log(result.station_stats.daily_avg);
+        // Daily chart
+        //- Store and prepare the new data from the JSON file
         var dailyData = result.station_stats.daily_avg;
-        var chartData = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
-        dailyChart.data.datasets[0].data = chartData;
+        var dailyChartData = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
+        //- Modify the chart data
+        dailyChart.data.datasets[0].data = dailyChartData;
+        //- Update the chart display
         dailyChart.update();
+
+        // Hourly chart
+        //- Store and prepare the new data from the JSON file
+        var hourlyData = result.station_stats.hourly_avg;
+        var hourlyChartData = [hourlyData.Monday, hourlyData.Tuesday, hourlyData.Wednesday, hourlyData.Thursday, hourlyData.Friday, hourlyData.Saturday, hourlyData.Sunday];
+        //- Modify the chart data
+        for (var i = 0; i < hourlyChartData.length; i++) {
+            hourlyChart.data.datasets[i].data = hourlyChartData[i];
+        }
+        //- Update the chart display
+        hourlyChart.update();
     })
     .fail(function() {
         console.log( "Error: Failed to get JSON data from "+ flaskUrl );
     });
 }
 
-// function updateStationData(url, callback) {
-//     if (stationsUpdated === false) {
-//         $.getJSON(url, function(result){
-//             stationData = result;
-//             callback(stationData);
-//             console.log(stationData);
-//         })
-//         .fail(function() {
-//             console.log( "Error: Failed to get JSON data from "+ url );
-//         });
-//         trueWaitFalse(stationsUpdated, 60000);
-//     }
-// }
-//
-// function trueWaitFalse(bool, waitTime) {
-//     bool = true;
-//     setTimeout(function() {
-//         bool = false;
-//     }, waitTime);
-// }
+// Update charts only (mainly for chart initialization)
+function updateCharts(stationNumber) {
+    var flaskUrl = $SCRIPT_ROOT + "/station_stats/" + stationNumber;
+    $.getJSON(flaskUrl, function(result) {
+        // Daily chart
+        //- Store and prepare the new data from the JSON file
+        var dailyData = result.station_stats.daily_avg;
+        var dailyChartData = [dailyData.Monday, dailyData.Tuesday, dailyData.Wednesday, dailyData.Thursday, dailyData.Friday, dailyData.Saturday, dailyData.Sunday];
+        //- Modify the chart data
+        dailyChart.data.datasets[0].data = dailyChartData;
+        //- Update the chart display
+        dailyChart.update();
 
-// updateStationData(jcdUrl, dropDownStations); // update station data //FIXME
+        // Hourly chart
+        //- Store and prepare the new data from the JSON file
+        var hourlyData = result.station_stats.hourly_avg;
+        var hourlyChartData = [hourlyData.Monday, hourlyData.Tuesday, hourlyData.Wednesday, hourlyData.Thursday, hourlyData.Friday, hourlyData.Saturday, hourlyData.Sunday];
+        //- Modify the chart data
+        for (var i = 0; i < hourlyChartData.length; i++) {
+            hourlyChart.data.datasets[i].data = hourlyChartData[i];
+        }
+        //- Update the chart display
+        hourlyChart.update();
+    })
+    .fail(function() {
+        console.log("Error: Failed to get JSON data from "+ flaskUrl);
+    });
+}
+
 
 //--------------------------------------------------------------
 // Main
@@ -142,7 +218,6 @@ dropDownStations("/static/data/station_data.json");
 
 // Initialize daily average chart
 var url = $SCRIPT_ROOT + "/station_stats/" + "37";
-// Daily chart
 var chartDataDaily = [4,4,4,4,4,4,4]; // initial dummy data; makes initial animation smoother
 var labelsDaily = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 // Create daily chart in canvas on html page
@@ -151,8 +226,15 @@ var dailyChart = createBarChart("daily-chart", chartDataDaily, labelsDaily, "Ave
 updateCharts("37");
 
 // Initialize hourly average chart
-// TODO
-
+var chartDataHourly = new Array(7); // initial dummy data; makes initial animation smoother
+for (var i = 0; i < 7; i++) {
+    chartDataHourly[i] = Array(20).fill(0);
+}
+var labelsHourly = ["05:00","06:00","07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00", "00:00"];
+// Create daily chart in canvas on html page
+var hourlyChart = createLineChart("hourly-chart", chartDataHourly, labelsHourly, "Average bike availability per hour per day");
+// Add inital real data from database via API call to flask app
+updateCharts("37");
 
 /***** Google Map *****/
 
