@@ -29,7 +29,7 @@ function dropDownStations(url) {
         var stationData = result;
         var html = "";
         for (var i = 0; i < stationData.length; i++) {
-            var name = stationData[i].name;
+            var name = stationData[i].address;
             var number = stationData[i].number;
             html += ('<li><a onclick="updateData(\''+ number + '\')">' + name + '</a></li>');
         }
@@ -203,11 +203,11 @@ function updateCharts(stationNumber) {
 // Main
 //--------------------------------------------------------------
 
-/***** Diplay current weather *****/
+/***** Display current weather *****/
 currentWeather(weatherUrl)
 
 /***** Dropdown list to select station *****/
-dropDownStations($SCRIPT_ROOT + "/static/data/station_data.json");
+dropDownStations($SCRIPT_ROOT + "/static/data/Dublin.json");
 
 
 /***** Charts ******/
