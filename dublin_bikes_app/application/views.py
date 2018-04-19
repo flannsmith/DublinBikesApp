@@ -1,14 +1,10 @@
 from flask import render_template, jsonify, g
 from application import app
-from application import db
 from application import analysis
 
 @app.route('/')
 def index():
-	# Initial data for charts
-	data = {'daily_avg': analysis.get_daily_avg(11), 'hourly_avg': analysis.get_hourly_avg(1), 'weather': analysis.get_weather(1)}
-	
-	return render_template("index.html", values=data)
+	return render_template("index.html")
 
 
 @app.route('/station_stats/<int:station_num>')
@@ -23,7 +19,7 @@ def get_chart_data(station_num):
 
 
 @app.teardown_appcontext
-def close_connection(exception):
+def close_connection(exception): #FIXME
 	db = getattr(g, '_database', None)
 	if db is not None:
 		db.close()
