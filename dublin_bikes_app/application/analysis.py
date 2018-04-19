@@ -30,7 +30,7 @@ def get_hourly_avg(station_num):
     # MySQL query to get average hourly availability for a given station
     sql = """SELECT DAYNAME(update_time) AS day, ROUND(AVG(bikes_available)) AS available
     FROM bikesdata.stations
-    WHERE HOUR(update_time) > 4 AND station_number = {} 
+    WHERE HOUR(update_time) > 3 AND station_number = {} 
     GROUP BY DAYNAME(update_time), HOUR(update_time);""".format(station_num) #TODO: Add query
     
     # Execute SQL query for hourly averages
