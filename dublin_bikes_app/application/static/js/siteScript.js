@@ -171,6 +171,8 @@ function updateData(stationNumber) {
 function updateCharts(stationNumber) {
     var flaskUrl = $SCRIPT_ROOT + "/station_stats/" + stationNumber;
     $.getJSON(flaskUrl, function(result) {
+        //console.log("Returned historical data: ", result);
+
         // Daily chart
         //- Store and prepare the new data from the JSON file
         var dailyData = result.station_stats.daily_avg;
@@ -205,7 +207,7 @@ function updateCharts(stationNumber) {
 currentWeather(weatherUrl)
 
 /***** Dropdown list to select station *****/
-dropDownStations("/static/data/station_data.json");
+dropDownStations($SCRIPT_ROOT + "/static/data/station_data.json");
 
 
 /***** Charts ******/
