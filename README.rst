@@ -16,17 +16,13 @@ Dublin Bikes App
 
 
 
-Python Boilerplate contains all the boilerplate you need to create a Python package.
+A web application that delivers live availability information for Dublin Bikes.
 
 
 * Free software: MIT license
 * Documentation: https://dublin-bikes-app.readthedocs.io.
 
 
-Features
---------
-
-* TODO
 
 Credits
 -------
