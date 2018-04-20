@@ -53,7 +53,7 @@ else:
     except mysql.connector.Error as err:
         print("Something went wrong inserting the data at: {}".format(err))
     else:
-      print("Data Inserted at: {}".format(LUD))
+      print("Weather data for {} inserted".format(time_stamp))
       
   cnx.commit()
   cnx.close()

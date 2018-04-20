@@ -69,9 +69,12 @@ def get_hourly_avg(station_num):
             
     return data
 
-
+#TODO
 def get_weather(station_num):
-    """Returns daily average data for REST API response providing json file with data for charts"""
+    """
+    Returns daily average data under different weather conditions.
+    For REST API response providing json file with data for charts
+    """
 
     
     # MySQL query to get average hourly availability for a given station
