@@ -1,4 +1,4 @@
-from flask import render_template, jsonify, g
+from flask import render_template, jsonify
 from application import app
 from application import analysis
 
@@ -16,10 +16,3 @@ def get_chart_data(station_num):
 	
 	# Return JSON file as HTTP response
 	return jsonify(station_stats=data)
-
-
-@app.teardown_appcontext
-def close_connection(exception): #FIXME
-	db = getattr(g, '_database', None)
-	if db is not None:
-		db.close()
