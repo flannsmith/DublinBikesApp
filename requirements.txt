@@ -22,7 +22,7 @@ MarkupSafe==1.0
 matplotlib==2.2.2
 more-itertools==4.1.0
 mysql-connector-python-rf==2.2.2
-numpy==1.14.2
+numpy==1.22.0
 pandas==0.22.0
 pluggy==0.6.0
 poyo==0.4.1
